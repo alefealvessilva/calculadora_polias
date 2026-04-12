@@ -13,7 +13,7 @@ final historyRepositoryProvider = Provider<HistoryRepository?>((ref) {
   return prefsAsync.when(
     data: (prefs) => HistoryRepositoryImpl(prefs),
     loading: () => null,
-    error: (_, _) => null,
+    error: (error, stack) => null,
   );
 });
 
