@@ -1,0 +1,7 @@
+{
+  "name": "calculadora-polias-pro",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "git clone https://github.com/flutter/flutter.git --depth 1 -b stable flutter-sdk && ./flutter-sdk/bin/flutter build web --release"
+  }
+}

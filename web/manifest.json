@@ -1,11 +1,11 @@
 {
-    "name": "calculadora_polias",
-    "short_name": "calculadora_polias",
+    "name": "Calculadora de Polias Pro",
+    "short_name": "Calculadora Polias",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0B0E11",
+    "theme_color": "#0B0E11",
+    "description": "Cálculo técnico de RPM, polias e correias para engenharia e manutenção.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
