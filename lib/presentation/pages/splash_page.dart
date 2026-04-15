@@ -56,11 +56,11 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(36),
                     child: Image.asset(
                       'assets/images/app_logo.png',
                       height: 180,
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 );

@@ -1,4 +1,4 @@
-package com.asclabs.calculadorapolias
+package br.com.asclabs.calculadorapolias
 
 import io.flutter.embedding.android.FlutterActivity
 

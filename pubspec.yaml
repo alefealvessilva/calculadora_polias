@@ -67,7 +67,7 @@ flutter_native_splash:
   color: "#0B0E11" # AppTheme.deepDark
   image: "assets/images/app_logo.png"
   android_12:
-    image: "assets/images/app_logo.png"
+    image: "assets/images/app_logo_foreground.png"
     color: "#0B0E11"
   web: false
 

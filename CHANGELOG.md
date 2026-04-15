@@ -2,9 +2,12 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas aqui.
 
-## [1.0.0] - 2026-04-12
+## [1.0.0] - 2026-04-15
 
 ### 🚀 Novidades
+*   **Produção**: Preparação completa para Play Store (AAB assinado).
+*   **Legal**: Inclusão de Política de Privacidade em `privacy_policy.html`.
+*   **Marketing**: Novo logo e Splash Screen premium integrados via Icon Kitchen.
 *   **Gerador de PDF v3**: Novo motor de layout unificado para página única A4.
 *   **Diagrama Técnico Inteligente**: Implementação de tangentes externas para desenho matemático perfeito de polias e correias.
 *   **Web Native Loader**: Integração com JavaScript para exibição de spinner de carregamento persistente durante processamento pesado.

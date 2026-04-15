@@ -19,7 +19,7 @@ O projeto segue os princípios de **Clean Architecture**, **SOLID** e **Clean Co
 *   **Gerenciamento de Estado**: Flutter Riverpod
 *   **Estilização**: Material 3 com temas customizados
 *   **Relatórios**: Pacotes `pdf` e `printing` para geração e visualização
-*   **Anúncios**: Google Mobile Ads (Placeholders prontos)
+*   **Anúncios**: Integração oficial com Google Mobile Ads (Banner e Intersticial).
 
 ## 📁 Estrutura de Pastas
 

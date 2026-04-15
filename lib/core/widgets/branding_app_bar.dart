@@ -15,7 +15,10 @@ class BrandingAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Row(
         children: [
-          Image.asset('assets/images/app_logo.png', height: 28),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Image.asset('assets/images/app_logo.png', height: 28),
+          ),
           const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

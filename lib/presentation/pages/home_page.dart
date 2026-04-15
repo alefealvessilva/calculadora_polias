@@ -145,7 +145,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ),
               ],
             ),
-            child: Image.asset('assets/images/app_logo.png', height: 52),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset('assets/images/app_logo.png', height: 52),
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -258,7 +261,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ),
                                 ],
                               ),
-                              child: Image.asset('assets/images/app_logo.png', height: 50),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset('assets/images/app_logo.png', height: 50),
+                              ),
                             ),
                             const SizedBox(width: 16),
                             Column(
