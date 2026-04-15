@@ -1,0 +1,21 @@
+POLÍTICA DE PRIVACIDADE - CALCULADORA POLIAS PRO
+
+Esta política de privacidade descreve como a ASCLABS lida com as informações no aplicativo Calculadora Polias Pro.
+
+1. COLETA DE INFORMAÇÕES
+O aplicativo Calculadora Polias Pro é uma ferramenta de produtividade e engenharia. Nós NÃO coletamos informações de identificação pessoal diretamente dos usuários.
+
+2. SERVIÇOS DE TERCEIROS E PUBLICIDADE
+O aplicativo utiliza o serviço Google AdMob para exibição de anúncios. O Google pode coletar e usar dados do dispositivo (como ID de publicidade e endereço IP) para personalizar anúncios e analisar o desempenho. Para mais detalhes, consulte a Política de Privacidade do Google: https://policies.google.com/privacy
+
+3. PERMISSÕES DO DISPOSITIVO
+O aplicativo pode solicitar permissões apenas para funcionalidades essenciais, como acesso ao armazenamento para salvar relatórios em PDF gerados por você. Nenhuma informação pessoal é extraída do seu dispositivo.
+
+4. ALTERAÇÕES NESTA POLÍTICA
+Podemos atualizar nossa Política de Privacidade de tempos em tempos. Recomendamos que você revise este documento periodicamente para quaisquer alterações.
+
+5. CONTATO
+Se você tiver alguma dúvida ou sugestão sobre nossa política de privacidade, entre em contato conosco através do e-mail de suporte da ASCLABS.
+
+Atualizado em: 15 de abril de 2026
+ASCLABS - Todos os direitos reservados.
