@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:calculadora_polias/core/theme/app_theme.dart';
 
 // Widget reutilizável para consistência nos formulários
 class CustomTextField extends StatelessWidget {
@@ -6,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   final String? suffixText;
   final TextEditingController controller;
   final TextInputAction textInputAction;
+  final bool highlighted;
 
   const CustomTextField({
     super.key,
@@ -13,31 +15,25 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     this.suffixText,
     this.textInputAction = TextInputAction.next,
+    this.highlighted = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        textInputAction: textInputAction,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          labelText: label,
-          suffixText: suffixText,
-          suffixStyle: const TextStyle(color: Colors.white54, fontWeight: FontWeight.normal),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Obrigatório';
-          }
-          if (double.tryParse(value.replaceAll(',', '.')) == null) {
-            return 'Número inválido';
-          }
-          return null;
-        },
+    return TextFormField(
+      controller: controller,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      textInputAction: textInputAction,
+      style: TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
+        color: highlighted ? AppTheme.primary : AppTheme.textPrimary,
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        suffixText: suffixText,
+        fillColor: highlighted ? AppTheme.primarySoft : AppTheme.surface,
+        suffixStyle: const TextStyle(color: AppTheme.textSecondary),
       ),
     );
   }

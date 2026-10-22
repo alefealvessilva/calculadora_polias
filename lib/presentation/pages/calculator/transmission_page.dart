@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:calculadora_polias/core/ads/ad_helper.dart';
 import 'package:calculadora_polias/core/theme/app_theme.dart';
 import 'package:calculadora_polias/core/utils/unit_converter.dart';
@@ -11,6 +10,7 @@ import 'package:calculadora_polias/core/utils/pdf_generator_service.dart';
 import 'package:calculadora_polias/core/widgets/branding_app_bar.dart';
 import 'package:calculadora_polias/presentation/widgets/custom_text_field.dart';
 import 'package:calculadora_polias/presentation/widgets/pulley_system_diagram.dart';
+import 'package:calculadora_polias/presentation/widgets/result_card.dart';
 
 class TransmissionPage extends ConsumerStatefulWidget {
   const TransmissionPage({super.key});
@@ -27,6 +27,7 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
   final _d2Controller = TextEditingController();
 
   DynamicTransmissionResult? _result;
+  String? _solved; // campo que foi deixado em branco e calculado
   bool _isExporting = false;
 
   void _calculate() {
@@ -41,6 +42,8 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
     final n2 = parseValue(_n2Controller.text);
     final d2 = parseValue(_d2Controller.text);
 
+    final solved = n1 == null ? 'n1' : d1 == null ? 'd1' : n2 == null ? 'n2' : 'd2';
+
     try {
       final result = CalculationsUsecases.calculateDynamicTransmission(
         n1: n1, d1: d1, n2: n2, d2: d2,
@@ -48,6 +51,7 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
 
       setState(() {
         _result = result;
+        _solved = solved;
         _n1Controller.text = UnitConverter.format(result.n1);
         _d1Controller.text = UnitConverter.format(result.d1);
         _n2Controller.text = UnitConverter.format(result.n2);
@@ -106,7 +110,21 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
 
   void _reset() {
     _n1Controller.clear(); _d1Controller.clear(); _n2Controller.clear(); _d2Controller.clear();
-    setState(() { _result = null; });
+    setState(() { _result = null; _solved = null; });
+  }
+
+  ({String label, String value}) _solvedInfo(MeasurementUnit unit) {
+    final r = _result!;
+    switch (_solved) {
+      case 'n1':
+        return (label: 'RPM do motor', value: '${UnitConverter.format(r.n1)} RPM');
+      case 'd1':
+        return (label: 'Diâmetro da polia motora', value: '${UnitConverter.format(r.d1)} ${unit.label}');
+      case 'd2':
+        return (label: 'Diâmetro da polia movida', value: '${UnitConverter.format(r.d2)} ${unit.label}');
+      default:
+        return (label: 'RPM de saída', value: '${UnitConverter.format(r.n2)} RPM');
+    }
   }
 
   @override
@@ -117,92 +135,41 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
       builder: (context, constraints) {
         final bool isDesktop = constraints.maxWidth > 800;
 
+        final inputs = _buildInputSection(unit);
+        final results = _result == null ? const SizedBox.shrink() : _buildResultSection(unit);
+
         final content = Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: isDesktop ? 1200 : 600),
+            constraints: BoxConstraints(maxWidth: isDesktop ? 1000 : 560),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: isDesktop ? 48 : 16),
+              padding: EdgeInsets.symmetric(horizontal: isDesktop ? 32 : 16, vertical: 20),
               child: Form(
                 key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (isDesktop) ...[
-                    const SizedBox(height: 80),
-                    Text(
-                      'Cálculo de Transmissão',
-                      style: GoogleFonts.sora(fontSize: 48, fontWeight: FontWeight.w900, color: AppTheme.stellarWhite),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Dimensionamento de rotações e diâmetros para projetos mecânicos.',
-                      style: GoogleFonts.inter(color: AppTheme.greyText, fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 80),
-                    _buildInfoBox(),
-                    const SizedBox(height: 32),
-                  ],
-
-                  if (isDesktop)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(flex: 1, child: _buildInputSection(unit)),
-                        const SizedBox(width: 80),
-                        Expanded(flex: 1, child: _buildVisualSection(unit)),
-                      ],
-                    )
-                  else
-                    Column(
-                      children: [
-                        _buildInfoBox(),
-                        const SizedBox(height: 32),
-                        _buildInputSection(unit),
-                        const SizedBox(height: 48),
-                        _buildVisualSection(unit),
-                      ],
-                    ),
-                  
-                  if (isDesktop) const SizedBox(height: 120),
-                ],
+                child: isDesktop
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: inputs),
+                          const SizedBox(width: 32),
+                          Expanded(child: results),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [inputs, const SizedBox(height: 20), results],
+                      ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
         if (isDesktop) return content;
 
         return Scaffold(
-          appBar: const BrandingAppBar(),
-          body: SingleChildScrollView(child: Padding(padding: const EdgeInsets.symmetric(vertical: 20), child: content)),
+          appBar: const BrandingAppBar(title: 'Transmissão'),
+          body: SingleChildScrollView(child: content),
         );
       },
-    );
-  }
-
-  Widget _buildInfoBox() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.cosmicTeal.withAlpha(10),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.cosmicTeal.withAlpha(20)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.info_outline, color: AppTheme.cosmicTeal, size: 20),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'DICA: Deixe o campo que deseja descobrir em BRANCO.',
-              style: GoogleFonts.inter(color: AppTheme.cosmicTeal, fontWeight: FontWeight.w600, fontSize: 13),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -210,133 +177,78 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const Text(
+          'Deixe em branco o campo que quer descobrir.',
+          style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+        ),
+        const SizedBox(height: 16),
+        _sectionLabel('Polia motora'),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('MOTOR (Polia 1)', style: GoogleFonts.sora(fontWeight: FontWeight.w800, fontSize: 16, color: AppTheme.stellarWhite)),
-                  const SizedBox(height: 20),
-                  CustomTextField(label: 'RPM Motor', controller: _n1Controller, suffixText: 'RPM'),
-                  CustomTextField(label: 'Diâmetro (${unit.label})', controller: _d1Controller, suffixText: unit.label),
-                ],
-              ),
-            ),
-            const SizedBox(width: 24),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('MOVIDA (Polia 2)', style: GoogleFonts.sora(fontWeight: FontWeight.w800, fontSize: 16, color: AppTheme.stellarWhite)),
-                  const SizedBox(height: 20),
-                  CustomTextField(label: 'RPM Polia', controller: _n2Controller, suffixText: 'RPM'),
-                  CustomTextField(label: 'Diâmetro (${unit.label})', controller: _d2Controller, suffixText: unit.label),
-                ],
-              ),
-            ),
+            Expanded(child: CustomTextField(label: 'RPM', controller: _n1Controller, suffixText: 'RPM', highlighted: _solved == 'n1')),
+            const SizedBox(width: 12),
+            Expanded(child: CustomTextField(label: 'Diâmetro', controller: _d1Controller, suffixText: unit.label, highlighted: _solved == 'd1')),
           ],
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: 20),
+        _sectionLabel('Polia movida'),
         Row(
           children: [
-            Expanded(
-              child: TextButton(
-                onPressed: _reset,
-                child: Text('LIMPAR CAMPOS', style: GoogleFonts.inter(color: AppTheme.greyText, fontWeight: FontWeight.bold)),
-              ),
-            ),
-            const SizedBox(width: 24),
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: AppTheme.digitalGlowDecoration,
-                child: ElevatedButton(
-                  onPressed: _calculate,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                  ),
-                  child: const Text('CALCULAR'),
-                ),
-              ),
-            ),
+            Expanded(child: CustomTextField(label: 'RPM', controller: _n2Controller, suffixText: 'RPM', highlighted: _solved == 'n2')),
+            const SizedBox(width: 12),
+            Expanded(child: CustomTextField(label: 'Diâmetro', controller: _d2Controller, suffixText: unit.label, highlighted: _solved == 'd2')),
           ],
+        ),
+        const SizedBox(height: 24),
+        FilledButton(onPressed: _calculate, child: const Text('Calcular')),
+        TextButton(
+          onPressed: _reset,
+          child: const Text('Limpar campos', style: TextStyle(color: AppTheme.textSecondary)),
         ),
       ],
     );
   }
 
-  Widget _buildVisualSection(MeasurementUnit unit) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: AppTheme.cardGlowDecoration,
-      child: Column(
-        children: [
-          Text(
-            'DIAGRAMA DE TRANSMISSÃO',
-            style: GoogleFonts.sora(letterSpacing: 2, color: AppTheme.cosmicTeal, fontSize: 11, fontWeight: FontWeight.w900),
+  Widget _sectionLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(text, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textPrimary)),
+    );
+  }
+
+  Widget _buildResultSection(MeasurementUnit unit) {
+    final info = _solvedInfo(unit);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ResultCard(
+          label: info.label,
+          value: info.value,
+          detail: 'Relação de transmissão  1 : ${UnitConverter.format(_result!.ratio)}',
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: AppTheme.card,
+          child: PulleySystemDiagram(
+            n1: _result!.n1,
+            d1: _result!.d1,
+            n2: _result!.n2,
+            d2: _result!.d2,
+            animate: true,
           ),
-          const SizedBox(height: 40),
-          PulleySystemDiagram(
-            n1: _result?.n1 ?? 0,
-            d1: _result?.d1 ?? 0,
-            n2: _result?.n2 ?? 0,
-            d2: _result?.d2 ?? 0,
-            animate: _result != null,
-          ),
-          if (_result != null) ...[
-            const SizedBox(height: 40),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white.withAlpha(5),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Relação:', style: GoogleFonts.inter(color: AppTheme.greyText, fontWeight: FontWeight.w600)),
-                  const SizedBox(width: 12),
-                  Text(
-                    '1 : ${UnitConverter.format(_result!.ratio)}',
-                    style: GoogleFonts.sora(color: AppTheme.cosmicTeal, fontSize: 24, fontWeight: FontWeight.w900, shadows: [
-                      Shadow(color: AppTheme.cosmicTeal.withAlpha(50), blurRadius: 10),
-                    ]),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _isExporting ? null : _exportPdf,
-                icon: _isExporting
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(AppTheme.deepDark),
-                        ),
-                      )
-                    : const Icon(Icons.picture_as_pdf),
-                label: Text(_isExporting ? 'GERANDO...' : 'GERAR RELATÓRIO'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.stellarWhite,
-                  foregroundColor: AppTheme.deepDark,
-                  padding: const EdgeInsets.symmetric(vertical: 22),
-                ),
-              ),
-            ),
-          ],
-          const SizedBox(height: 32),
-          const DisclaimerWidget(),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16),
+        OutlinedButton.icon(
+          onPressed: _isExporting ? null : _exportPdf,
+          icon: _isExporting
+              ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+              : const Icon(Icons.picture_as_pdf_outlined),
+          label: Text(_isExporting ? 'Gerando...' : 'Gerar relatório em PDF'),
+        ),
+        const SizedBox(height: 16),
+        const DisclaimerWidget(),
+      ],
     );
   }
 }

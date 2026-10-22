@@ -66,7 +66,7 @@ class _PulleySystemDiagramState extends State<PulleySystemDiagram>
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: const Size(double.infinity, 220),
+      size: const Size(double.infinity, 170),
       painter: _PulleyPainter(
         rotationAngle: _currentAngle,
         d1: widget.d1 > 0 ? widget.d1 : 50,
@@ -108,34 +108,22 @@ class _PulleyPainter extends CustomPainter {
     Offset center1 = Offset(size.width * 0.25, size.height * 0.45);
     Offset center2 = Offset(size.width * 0.75, size.height * 0.45);
 
-    final Paint beltGlow = Paint()
-      ..color = AppTheme.cosmicTeal.withAlpha(150)
+    final Paint beltPaint = Paint()
+      ..color = AppTheme.primary
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 6.0
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0);
+      ..strokeWidth = 2.5;
 
-    final Paint beltCore = Paint()
-      ..color = AppTheme.stellarWhite
+    final Paint pulleyOutline = Paint()
+      ..color = AppTheme.textPrimary
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
-    final Paint pulleyOutlineGlow = Paint()
-      ..color = AppTheme.galacticViolet.withAlpha(180)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 5.0
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
-
-    final Paint pulleyOutlineCore = Paint()
-      ..color = Colors.white.withAlpha(200)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
+      ..strokeWidth = 2.0;
 
     final Paint pulleyFillPaint = Paint()
-      ..color = AppTheme.surfaceDark
+      ..color = AppTheme.primarySoft
       ..style = PaintingStyle.fill;
-      
+
     final Paint axisPaint = Paint()
-      ..color = AppTheme.cosmicTeal
+      ..color = AppTheme.textPrimary
       ..style = PaintingStyle.fill;
 
     double dist = (center2 - center1).distance;
@@ -147,43 +135,28 @@ class _PulleyPainter extends CustomPainter {
     Offset bot1 = center1 + Offset(p1Radius * cos(-theta1), -p1Radius * sin(-theta1));
     Offset bot2 = center2 + Offset(p2Radius * cos(-theta1), -p2Radius * sin(-theta1));
 
-    // Camada de Glow da Correia
-    canvas.drawLine(top1, top2, beltGlow);
-    canvas.drawLine(bot1, bot2, beltGlow);
+    canvas.drawLine(top1, top2, beltPaint);
+    canvas.drawLine(bot1, bot2, beltPaint);
 
-    // Camada Core da Correia
-    canvas.drawLine(top1, top2, beltCore);
-    canvas.drawLine(bot1, bot2, beltCore);
+    _drawPulley(canvas, center1, p1Radius, rotationAngle, pulleyFillPaint, pulleyOutline, axisPaint);
 
-    // Polias
-    _drawPulley(canvas, center1, p1Radius, rotationAngle, pulleyFillPaint, pulleyOutlineGlow, pulleyOutlineCore, axisPaint);
-    
     double ratioRPM = n1 > 0 ? (n2 / n1) : 1.0;
     double rot2 = rotationAngle * ratioRPM;
-    _drawPulley(canvas, center2, p2Radius, rot2, pulleyFillPaint, pulleyOutlineGlow, pulleyOutlineCore, axisPaint);
+    _drawPulley(canvas, center2, p2Radius, rot2, pulleyFillPaint, pulleyOutline, axisPaint);
 
     _drawLabel(canvas, "Motor", center1.dx, size.height - 25);
     _drawLabel(canvas, "Movida", center2.dx, size.height - 25);
   }
 
-  void _drawPulley(Canvas canvas, Offset center, double radius, double rot, Paint fill, Paint glow, Paint core, Paint axis) {
+  void _drawPulley(Canvas canvas, Offset center, double radius, double rot, Paint fill, Paint outline, Paint axis) {
     canvas.drawCircle(center, radius, fill);
-    
-    // Glow do contorno
-    canvas.drawCircle(center, radius, glow);
-    // Core do contorno
-    canvas.drawCircle(center, radius, core);
+    canvas.drawCircle(center, radius, outline);
+    canvas.drawCircle(center, 5, axis);
 
-    canvas.drawCircle(center, 6, axis);
-    
-    // Raios
     for (int i = 0; i < 4; i++) {
-        double angle = rot + (i * pi / 2);
-        Offset edge = center + Offset(radius * cos(angle), radius * sin(angle));
-        // Camada de Glow do raio
-        canvas.drawLine(center, edge, glow);
-        // Camada Core do raio
-        canvas.drawLine(center, edge, core);
+      double angle = rot + (i * pi / 2);
+      Offset edge = center + Offset(radius * cos(angle), radius * sin(angle));
+      canvas.drawLine(center, edge, outline);
     }
   }
 

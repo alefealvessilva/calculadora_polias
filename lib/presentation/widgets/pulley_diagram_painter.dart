@@ -93,34 +93,21 @@ class PulleyDiagramPainter extends CustomPainter {
     if (drivingDiameter == 0 || drivenDiameter == 0 || distance == 0) return;
 
     final paintPulleyFile = Paint()
-      ..color = AppTheme.surfaceDark
+      ..color = AppTheme.primarySoft
       ..style = PaintingStyle.fill;
 
-    // Glow Paints (Neon layers)
-    final paintBorderGlow = Paint()
-      ..color = AppTheme.galacticViolet.withAlpha(180)
+    final paintBorder = Paint()
+      ..color = AppTheme.textPrimary
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 5.0
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
+      ..strokeWidth = 2.0;
 
-    final paintBorderCore = Paint()
-      ..color = Colors.white.withAlpha(200)
+    final paintBelt = Paint()
+      ..color = AppTheme.primary
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    final paintBeltGlow = Paint()
-      ..color = AppTheme.cosmicTeal.withAlpha(150)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 6.0
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0);
-
-    final paintBeltCore = Paint()
-      ..color = AppTheme.stellarWhite
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 2.5;
 
     final paintCenter = Paint()
-      ..color = AppTheme.cosmicTeal
+      ..color = AppTheme.textPrimary
       ..style = PaintingStyle.fill;
 
     double maxDiameter = max(drivingDiameter, drivenDiameter);
@@ -164,44 +151,29 @@ class PulleyDiagramPainter extends CustomPainter {
         sweepAngle2 = pi + 2 * (pi / 2 + phi);
       }
 
-      // Camada de Glow da Correia
-      canvas.drawLine(p1Top, p2Top, paintBeltGlow);
-      canvas.drawLine(p1Bottom, p2Bottom, paintBeltGlow);
-      canvas.drawArc(rect1, startAngle1, sweepAngle1, false, paintBeltGlow);
-      canvas.drawArc(rect2, startAngle2, sweepAngle2, false, paintBeltGlow);
-
-      // Camada Core da Correia
-      canvas.drawLine(p1Top, p2Top, paintBeltCore);
-      canvas.drawLine(p1Bottom, p2Bottom, paintBeltCore);
-      canvas.drawArc(rect1, startAngle1, sweepAngle1, false, paintBeltCore);
-      canvas.drawArc(rect2, startAngle2, sweepAngle2, false, paintBeltCore);
+      canvas.drawLine(p1Top, p2Top, paintBelt);
+      canvas.drawLine(p1Bottom, p2Bottom, paintBelt);
+      canvas.drawArc(rect1, startAngle1, sweepAngle1, false, paintBelt);
+      canvas.drawArc(rect2, startAngle2, sweepAngle2, false, paintBelt);
     }
 
     // Polias
-    _drawSpokePulley(canvas, c1, r1, rotationAngle, paintPulleyFile, paintBorderGlow, paintBorderCore, paintCenter);
+    _drawSpokePulley(canvas, c1, r1, rotationAngle, paintPulleyFile, paintBorder, paintCenter);
     
     double ratioRPM = drivingDiameter > 0 ? (drivingDiameter / drivenDiameter) : 1.0;
     double rot2 = rotationAngle * ratioRPM;
-    _drawSpokePulley(canvas, c2, r2, rot2, paintPulleyFile, paintBorderGlow, paintBorderCore, paintCenter);
+    _drawSpokePulley(canvas, c2, r2, rot2, paintPulleyFile, paintBorder, paintCenter);
   }
 
-  void _drawSpokePulley(Canvas canvas, Offset center, double radius, double rot, Paint fill, Paint glow, Paint core, Paint axis) {
+  void _drawSpokePulley(Canvas canvas, Offset center, double radius, double rot, Paint fill, Paint outline, Paint axis) {
     canvas.drawCircle(center, radius, fill);
-    
-    // Glow do contorno
-    canvas.drawCircle(center, radius, glow);
-    // Core do contorno
-    canvas.drawCircle(center, radius, core);
-
+    canvas.drawCircle(center, radius, outline);
     canvas.drawCircle(center, 4, axis);
-    
+
     for (int i = 0; i < 4; i++) {
-        double angle = rot + (i * pi / 2);
-        Offset edge = center + Offset(radius * cos(angle), radius * sin(angle));
-        // Camada de Glow do raio
-        canvas.drawLine(center, edge, glow);
-        // Camada Core do raio
-        canvas.drawLine(center, edge, core);
+      double angle = rot + (i * pi / 2);
+      Offset edge = center + Offset(radius * cos(angle), radius * sin(angle));
+      canvas.drawLine(center, edge, outline);
     }
   }
 

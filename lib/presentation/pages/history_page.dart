@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:calculadora_polias/core/theme/app_theme.dart';
 import 'package:calculadora_polias/domain/usecases/calculations_usecases.dart';
 import 'package:calculadora_polias/presentation/providers/app_providers.dart';
@@ -92,119 +91,35 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
 
         final content = Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: isDesktop ? 1000 : 800),
+            constraints: BoxConstraints(maxWidth: isDesktop ? 800 : 560),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: isDesktop ? 48 : 16),
+              padding: EdgeInsets.symmetric(horizontal: isDesktop ? 32 : 16, vertical: 20),
               child: historyAsync.when(
                 data: (items) {
                   if (items.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 120),
-                      child: Center(child: Text('Nenhum registro encontrado.', style: GoogleFonts.inter(color: AppTheme.greyText))),
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 96),
+                      child: Center(
+                        child: Text('Nenhum cálculo salvo ainda.', style: TextStyle(color: AppTheme.textSecondary)),
+                      ),
                     );
                   }
                   return Column(
                     children: [
-                      if (isDesktop) ...[
-                        const SizedBox(height: 80),
-                        Text(
-                          'Histórico de Cálculos',
-                          style: GoogleFonts.sora(fontSize: 48, fontWeight: FontWeight.w900, color: AppTheme.stellarWhite),
-                          textAlign: TextAlign.center,
+                      if (isDesktop)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton.icon(
+                            onPressed: () => ref.read(historyProvider.notifier).clearAll(),
+                            icon: const Icon(Icons.delete_sweep_outlined),
+                            label: const Text('Limpar tudo'),
+                          ),
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Visualize e gere relatórios de seus dimensionamentos salvos.',
-                          style: GoogleFonts.inter(color: AppTheme.greyText, fontSize: 18),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 64),
-                      ],
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          final hasData = item.calculationData != null;
-                          final isThisItemExporting = _exportingItemId == item.id;
-
-                          return Card(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  // Ícone
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(color: AppTheme.cosmicTeal.withAlpha(20), shape: BoxShape.circle),
-                                    child: Icon(_getIconForType(item.type), color: AppTheme.cosmicTeal, size: 24),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  
-                                  // Conteúdo
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item.title, 
-                                          style: GoogleFonts.sora(fontWeight: FontWeight.w800, color: AppTheme.stellarWhite, fontSize: 16),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          item.result, 
-                                          style: GoogleFonts.inter(color: AppTheme.greyText, fontSize: 12, height: 1.4),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  
-                                  // Ações e Data
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      if (hasData)
-                                        isThisItemExporting
-                                            ? const SizedBox(
-                                                width: 32,
-                                                height: 32,
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(6),
-                                                  child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.cosmicTeal),
-                                                ),
-                                              )
-                                            : IconButton(
-                                                constraints: const BoxConstraints(),
-                                                padding: EdgeInsets.zero,
-                                                icon: const Icon(Icons.picture_as_pdf_outlined, color: AppTheme.cosmicTeal, size: 28),
-                                                onPressed: () => _exportHistoryPdf(item),
-                                                tooltip: 'Exportar PDF',
-                                              ),
-                                      const SizedBox(height: 12),
-                                      Text(
-                                        DateFormat('dd MMM\nHH:mm').format(item.date).toUpperCase(),
-                                        textAlign: TextAlign.right,
-                                        style: GoogleFonts.inter(fontSize: 10, color: AppTheme.greyText.withAlpha(150), fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      if (isDesktop) const SizedBox(height: 120),
+                      for (final item in items) _buildItem(item),
                     ],
                   );
                 },
-                loading: () => const Center(child: CircularProgressIndicator(color: AppTheme.cosmicTeal)),
+                loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Center(child: Text('Erro: $e', style: const TextStyle(color: Colors.redAccent))),
               ),
             ),
@@ -215,17 +130,63 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
 
         return Scaffold(
           appBar: BrandingAppBar(
+            title: 'Histórico',
             actions: [
               IconButton(
-                icon: const Icon(Icons.delete_sweep_outlined, color: AppTheme.cosmicTeal),
+                icon: const Icon(Icons.delete_sweep_outlined),
                 onPressed: () => ref.read(historyProvider.notifier).clearAll(),
-                tooltip: 'Limpar Tudo',
-              )
+                tooltip: 'Limpar tudo',
+              ),
             ],
           ),
-          body: SingleChildScrollView(child: Padding(padding: const EdgeInsets.symmetric(vertical: 20), child: content)),
+          body: SingleChildScrollView(child: content),
         );
       },
+    );
+  }
+
+  Widget _buildItem(HistoryItem item) {
+    final hasData = item.calculationData != null;
+    final isExporting = _exportingItemId == item.id;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: AppTheme.card,
+      child: Row(
+        children: [
+          Icon(_getIconForType(item.type), color: AppTheme.primary),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: AppTheme.textPrimary),
+                ),
+                const SizedBox(height: 2),
+                Text(item.result, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13, height: 1.4)),
+                const SizedBox(height: 4),
+                Text(
+                  DateFormat('dd/MM/yyyy HH:mm').format(item.date),
+                  style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+          if (hasData)
+            isExporting
+                ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                : IconButton(
+                    icon: const Icon(Icons.picture_as_pdf_outlined, color: AppTheme.primary),
+                    onPressed: () => _exportHistoryPdf(item),
+                    tooltip: 'Exportar PDF',
+                  ),
+        ],
+      ),
     );
   }
 }
