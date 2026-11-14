@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora de Longitud de Correa y Distancia entre Centros | ASCLABS</title>
+<meta name="description" content="Calcula la longitud de la correa a partir de los diámetros de las poleas y la distancia entre centros, o al revés. Fórmula de correa abierta con ejemplo resuelto.">
+<link rel="canonical" href="https://calculadora-polias.asclabs.com.br/es/longitud-correa/">
+<link rel="alternate" hreflang="pt" href="https://calculadora-polias.asclabs.com.br/comprimento-correia/"><link rel="alternate" hreflang="es" href="https://calculadora-polias.asclabs.com.br/es/longitud-correa/"><link rel="alternate" hreflang="en" href="https://calculadora-polias.asclabs.com.br/en/belt-length/"><link rel="alternate" hreflang="x-default" href="https://calculadora-polias.asclabs.com.br/comprimento-correia/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculadora de Longitud de Correa y Distancia entre Centros | ASCLABS">
+<meta property="og:description" content="Calcula la longitud de la correa a partir de los diámetros de las poleas y la distancia entre centros, o al revés. Fórmula de correa abierta con ejemplo resuelto.">
+<meta property="og:url" content="https://calculadora-polias.asclabs.com.br/es/longitud-correa/">
+<meta property="og:image" content="https://calculadora-polias.asclabs.com.br/icons/Icon-512.png">
+<meta name="theme-color" content="#0e1014">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>:root{--bg:#0e1014;--sf:#161a20;--bd:#262b34;--ac:#22d3ee;--tx:#f1f5f9;--mu:#8a94a6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--ac)}main,footer{max-width:760px;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--bd)}header div{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;gap:12px}
+.brand{font-weight:700;color:var(--tx);text-decoration:none}.lang a{margin-left:10px;text-decoration:none;font-size:14px}h1{font-size:28px;line-height:1.25;margin:28px 0 8px}h2{font-size:20px;margin:32px 0 8px}
+p{margin:8px 0}.lead{color:var(--mu)}.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:20px 0}
+label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
+button,.btn{display:inline-block;margin-top:14px;padding:13px 18px;border-radius:10px;border:0;background:var(--ac);color:#0e1014;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer}
+.btn.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}#res{margin-top:14px;min-height:24px}#res small{display:block;color:var(--mu)}#res b{font-size:26px;color:var(--ac)}
+.formula{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.cta{display:flex;gap:10px;flex-wrap:wrap}details{border-bottom:1px solid var(--bd);padding:10px 0}summary{cursor:pointer;font-weight:600}
+nav.rel a{display:block;padding:8px 0}footer{color:var(--mu);font-size:13px;padding-top:28px;padding-bottom:40px}</style>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Cómo calcular la longitud de una correa?", "acceptedAnswer": {"@type": "Answer", "text": "Usa L = 2C + 1,57(D + d) + (D − d)² / 4C, donde C es la distancia entre centros y D y d los diámetros de las poleas."}}, {"@type": "Question", "name": "¿La fórmula sirve para correa en V y correa dentada?", "acceptedAnswer": {"@type": "Answer", "text": "Sirve como aproximación para ambas. La longitud final se redondea al tamaño estándar del fabricante y, en la dentada, hay que revisar el paso."}}, {"@type": "Question", "name": "¿Cómo hallar la distancia entre centros conociendo la correa?", "acceptedAnswer": {"@type": "Answer", "text": "Despeja C en la fórmula de la longitud. La aplicación lo calcula dejando en blanco el campo de la distancia."}}]}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Calculadora de Poleas", "item": "https://calculadora-polias.asclabs.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Calculadora de longitud de correa", "item": "https://calculadora-polias.asclabs.com.br/es/longitud-correa/"}]}]</script>
+<script async src="https://pagead2.googleapis.com/pagead/js/adsbygoogle.js?client=ca-pub-3590770249573148" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div><a class="brand" href="/">Calculadora de Poleas</a><span class="lang"><a href="/comprimento-correia/" hreflang="pt">PT</a><a href="/en/belt-length/" hreflang="en">EN</a><a href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">App Android</a></span></div></header>
+<main>
+<h1>Calculadora de longitud de correa</h1>
+<p class="lead">Indica el diámetro de las dos poleas y la distancia entre centros para obtener la longitud aproximada de la correa abierta. En la app también puedes hallar la distancia o un diámetro a partir de la longitud.</p>
+<div class="card">
+<label for="D">Polea mayor (D, mm)</label><input id="D" inputmode="decimal" value="200" autocomplete="off"><label for="d">Polea menor (d, mm)</label><input id="d" inputmode="decimal" value="100" autocomplete="off"><label for="C">Distancia entre centros (C, mm)</label><input id="C" inputmode="decimal" value="500" autocomplete="off">
+<button id="go" type="button">Calcular</button>
+<div id="res" aria-live="polite"></div>
+</div>
+<div class="cta">
+<a class="btn" href="/">Abrir la calculadora completa</a>
+<a class="btn alt" href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">Descargar en Google Play</a>
+</div>
+<h2>Fórmula de la longitud de la correa</h2><p>Para correa abierta (las dos poleas giran en el mismo sentido), la fórmula aproximada más usada es:</p><p class="formula">L = 2C + 1,57 × (D + d) + (D − d)² / (4C)</p><p>Donde <strong>L</strong> es la longitud de la correa, <strong>C</strong> la distancia entre los centros de los ejes, <strong>D</strong> el diámetro de la polea mayor y <strong>d</strong> el de la menor. Es válida cuando la distancia entre centros es mucho mayor que la diferencia entre diámetros.</p><h2>Ejemplo resuelto</h2><p>Poleas de <strong>200 mm</strong> y <strong>100 mm</strong> con <strong>500 mm</strong> entre centros:</p><p class="formula">L = 2×500 + 1,57×(200+100) + (200−100)² / (4×500)<br>L = 1000 + 471 + 5 = 1476 mm</p><p>Elige la correa estándar de longitud más cercana y ajusta la distancia entre centros para tensarla.</p><h2>Distancia entre centros mínima y máxima</h2><p>Como regla práctica, mantén la distancia entre centros entre <strong>0,7 × (D + d)</strong> y <strong>2 × (D + d)</strong>. Si es muy corta, se reduce el ángulo de abrazamiento y la correa patina; si es muy larga, aparecen vibraciones. Deja siempre margen de ajuste para instalar y tensar la correa.</p>
+<h2>Preguntas frecuentes</h2>
+<details><summary>¿Cómo calcular la longitud de una correa?</summary><p>Usa L = 2C + 1,57(D + d) + (D − d)² / 4C, donde C es la distancia entre centros y D y d los diámetros de las poleas.</p></details><details><summary>¿La fórmula sirve para correa en V y correa dentada?</summary><p>Sirve como aproximación para ambas. La longitud final se redondea al tamaño estándar del fabricante y, en la dentada, hay que revisar el paso.</p></details><details><summary>¿Cómo hallar la distancia entre centros conociendo la correa?</summary><p>Despeja C en la fórmula de la longitud. La aplicación lo calcula dejando en blanco el campo de la distancia.</p></details>
+<h2>Otros cálculos</h2>
+<nav class="rel"><a href="/es/rpm-polea/">Calculadora de RPM de polea</a><a href="/es/relacion-transmision/">Calculadora de relación de transmisión</a></nav>
+</main>
+<footer>© 2026 ASCLABS. Cálculos teóricos: valídalos con un ingeniero responsable antes de aplicarlos en un proyecto.</footer>
+<script>
+(function(){
+var ids=["D","d","C"],T={"r": "Longitud de la correa (L)"},MSG="Completa todos los campos con valores mayores que cero.";
+function fmt(x){return isFinite(x)?(Math.round(x*100)/100).toLocaleString('es'):'—'}
+function out(l,v){document.getElementById('res').innerHTML='<small>'+l+'</small><b>'+v+'</b>'}
+function run(){
+var v={};ids.forEach(function(k){v[k]=parseFloat(String(document.getElementById(k).value).replace(',','.'))});
+for(var k in v){if(!(v[k]>0)){document.getElementById('res').textContent=MSG;return}}
+var n1=v.n1,d1=v.d1,d2=v.d2,D=v.D,d=v.d,C=v.C;
+var L=2*C+1.57*(D+d)+Math.pow(D-d,2)/(4*C);out(T.r,fmt(L)+' mm');
+}
+document.getElementById('go').addEventListener('click',run);run();
+})();
+</script>
+</body>
+</html>

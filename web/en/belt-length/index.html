@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Belt Length and Center Distance Calculator | ASCLABS</title>
+<meta name="description" content="Calculate belt length from pulley diameters and center distance, or the reverse. Open-belt formula with a worked example.">
+<link rel="canonical" href="https://calculadora-polias.asclabs.com.br/en/belt-length/">
+<link rel="alternate" hreflang="pt" href="https://calculadora-polias.asclabs.com.br/comprimento-correia/"><link rel="alternate" hreflang="es" href="https://calculadora-polias.asclabs.com.br/es/longitud-correa/"><link rel="alternate" hreflang="en" href="https://calculadora-polias.asclabs.com.br/en/belt-length/"><link rel="alternate" hreflang="x-default" href="https://calculadora-polias.asclabs.com.br/comprimento-correia/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Belt Length and Center Distance Calculator | ASCLABS">
+<meta property="og:description" content="Calculate belt length from pulley diameters and center distance, or the reverse. Open-belt formula with a worked example.">
+<meta property="og:url" content="https://calculadora-polias.asclabs.com.br/en/belt-length/">
+<meta property="og:image" content="https://calculadora-polias.asclabs.com.br/icons/Icon-512.png">
+<meta name="theme-color" content="#0e1014">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>:root{--bg:#0e1014;--sf:#161a20;--bd:#262b34;--ac:#22d3ee;--tx:#f1f5f9;--mu:#8a94a6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--ac)}main,footer{max-width:760px;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--bd)}header div{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;gap:12px}
+.brand{font-weight:700;color:var(--tx);text-decoration:none}.lang a{margin-left:10px;text-decoration:none;font-size:14px}h1{font-size:28px;line-height:1.25;margin:28px 0 8px}h2{font-size:20px;margin:32px 0 8px}
+p{margin:8px 0}.lead{color:var(--mu)}.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:20px 0}
+label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
+button,.btn{display:inline-block;margin-top:14px;padding:13px 18px;border-radius:10px;border:0;background:var(--ac);color:#0e1014;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer}
+.btn.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}#res{margin-top:14px;min-height:24px}#res small{display:block;color:var(--mu)}#res b{font-size:26px;color:var(--ac)}
+.formula{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.cta{display:flex;gap:10px;flex-wrap:wrap}details{border-bottom:1px solid var(--bd);padding:10px 0}summary{cursor:pointer;font-weight:600}
+nav.rel a{display:block;padding:8px 0}footer{color:var(--mu);font-size:13px;padding-top:28px;padding-bottom:40px}</style>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate belt length?", "acceptedAnswer": {"@type": "Answer", "text": "Use L = 2C + 1.57(D + d) + (D − d)² / 4C, where C is the center distance and D and d are the pulley diameters."}}, {"@type": "Question", "name": "Does the formula work for V-belts and timing belts?", "acceptedAnswer": {"@type": "Answer", "text": "It is a good approximation for both. Round the result to the manufacturer's standard length, and check the pitch for timing belts."}}, {"@type": "Question", "name": "How do I find the center distance from a known belt?", "acceptedAnswer": {"@type": "Answer", "text": "Solve the length formula for C. The app does this when you leave the distance field blank."}}]}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Pulley Calculator", "item": "https://calculadora-polias.asclabs.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Belt length calculator", "item": "https://calculadora-polias.asclabs.com.br/en/belt-length/"}]}]</script>
+<script async src="https://pagead2.googleapis.com/pagead/js/adsbygoogle.js?client=ca-pub-3590770249573148" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div><a class="brand" href="/">Pulley Calculator</a><span class="lang"><a href="/comprimento-correia/" hreflang="pt">PT</a><a href="/es/longitud-correa/" hreflang="es">ES</a><a href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">Android app</a></span></div></header>
+<main>
+<h1>Belt length calculator</h1>
+<p class="lead">Enter both pulley diameters and the center distance to get the approximate open-belt length. In the app you can also solve for the center distance or a diameter from the belt length.</p>
+<div class="card">
+<label for="D">Large pulley (D, mm)</label><input id="D" inputmode="decimal" value="200" autocomplete="off"><label for="d">Small pulley (d, mm)</label><input id="d" inputmode="decimal" value="100" autocomplete="off"><label for="C">Center distance (C, mm)</label><input id="C" inputmode="decimal" value="500" autocomplete="off">
+<button id="go" type="button">Calculate</button>
+<div id="res" aria-live="polite"></div>
+</div>
+<div class="cta">
+<a class="btn" href="/">Open the full calculator</a>
+<a class="btn alt" href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">Get it on Google Play</a>
+</div>
+<h2>Belt length formula</h2><p>For an open belt (both pulleys turning the same way), the most common approximate formula is:</p><p class="formula">L = 2C + 1.57 × (D + d) + (D − d)² / (4C)</p><p>Where <strong>L</strong> is the belt length, <strong>C</strong> the distance between shaft centers, <strong>D</strong> the large pulley diameter and <strong>d</strong> the small one. It holds when the center distance is much larger than the difference between the diameters.</p><h2>Worked example</h2><p>Pulleys of <strong>200 mm</strong> and <strong>100 mm</strong> with <strong>500 mm</strong> between centers:</p><p class="formula">L = 2×500 + 1.57×(200+100) + (200−100)² / (4×500)<br>L = 1000 + 471 + 5 = 1476 mm</p><p>Pick the standard belt with the closest length and adjust the center distance to tension it.</p><h2>Minimum and maximum center distance</h2><p>As a rule of thumb, keep the center distance between <strong>0.7 × (D + d)</strong> and <strong>2 × (D + d)</strong>. Too short reduces the wrap angle and the belt slips; too long causes vibration. Always leave adjustment travel to install and tension the belt.</p>
+<h2>Frequently asked questions</h2>
+<details><summary>How do I calculate belt length?</summary><p>Use L = 2C + 1.57(D + d) + (D − d)² / 4C, where C is the center distance and D and d are the pulley diameters.</p></details><details><summary>Does the formula work for V-belts and timing belts?</summary><p>It is a good approximation for both. Round the result to the manufacturer&#x27;s standard length, and check the pitch for timing belts.</p></details><details><summary>How do I find the center distance from a known belt?</summary><p>Solve the length formula for C. The app does this when you leave the distance field blank.</p></details>
+<h2>More calculators</h2>
+<nav class="rel"><a href="/en/pulley-rpm/">Pulley RPM calculator</a><a href="/en/drive-ratio/">Pulley drive ratio calculator</a></nav>
+</main>
+<footer>© 2026 ASCLABS. Theoretical calculations: have a qualified engineer verify them before using in a project.</footer>
+<script>
+(function(){
+var ids=["D","d","C"],T={"r": "Belt length (L)"},MSG="Fill in every field with values greater than zero.";
+function fmt(x){return isFinite(x)?(Math.round(x*100)/100).toLocaleString('en-US'):'—'}
+function out(l,v){document.getElementById('res').innerHTML='<small>'+l+'</small><b>'+v+'</b>'}
+function run(){
+var v={};ids.forEach(function(k){v[k]=parseFloat(String(document.getElementById(k).value).replace(',','.'))});
+for(var k in v){if(!(v[k]>0)){document.getElementById('res').textContent=MSG;return}}
+var n1=v.n1,d1=v.d1,d2=v.d2,D=v.D,d=v.d,C=v.C;
+var L=2*C+1.57*(D+d)+Math.pow(D-d,2)/(4*C);out(T.r,fmt(L)+' mm');
+}
+document.getElementById('go').addEventListener('click',run);run();
+})();
+</script>
+</body>
+</html>

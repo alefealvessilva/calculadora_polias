@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora de Relación de Transmisión de Poleas | ASCLABS</title>
+<meta name="description" content="Calcula la relación de transmisión (i = D2/D1 = N1/N2) entre dos poleas. Entiende la reducción y la multiplicación de velocidad con un ejemplo resuelto.">
+<link rel="canonical" href="https://calculadora-polias.asclabs.com.br/es/relacion-transmision/">
+<link rel="alternate" hreflang="pt" href="https://calculadora-polias.asclabs.com.br/relacao-transmissao/"><link rel="alternate" hreflang="es" href="https://calculadora-polias.asclabs.com.br/es/relacion-transmision/"><link rel="alternate" hreflang="en" href="https://calculadora-polias.asclabs.com.br/en/drive-ratio/"><link rel="alternate" hreflang="x-default" href="https://calculadora-polias.asclabs.com.br/relacao-transmissao/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculadora de Relación de Transmisión de Poleas | ASCLABS">
+<meta property="og:description" content="Calcula la relación de transmisión (i = D2/D1 = N1/N2) entre dos poleas. Entiende la reducción y la multiplicación de velocidad con un ejemplo resuelto.">
+<meta property="og:url" content="https://calculadora-polias.asclabs.com.br/es/relacion-transmision/">
+<meta property="og:image" content="https://calculadora-polias.asclabs.com.br/icons/Icon-512.png">
+<meta name="theme-color" content="#0e1014">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>:root{--bg:#0e1014;--sf:#161a20;--bd:#262b34;--ac:#22d3ee;--tx:#f1f5f9;--mu:#8a94a6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--ac)}main,footer{max-width:760px;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--bd)}header div{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;gap:12px}
+.brand{font-weight:700;color:var(--tx);text-decoration:none}.lang a{margin-left:10px;text-decoration:none;font-size:14px}h1{font-size:28px;line-height:1.25;margin:28px 0 8px}h2{font-size:20px;margin:32px 0 8px}
+p{margin:8px 0}.lead{color:var(--mu)}.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:20px 0}
+label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
+button,.btn{display:inline-block;margin-top:14px;padding:13px 18px;border-radius:10px;border:0;background:var(--ac);color:#0e1014;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer}
+.btn.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}#res{margin-top:14px;min-height:24px}#res small{display:block;color:var(--mu)}#res b{font-size:26px;color:var(--ac)}
+.formula{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.cta{display:flex;gap:10px;flex-wrap:wrap}details{border-bottom:1px solid var(--bd);padding:10px 0}summary{cursor:pointer;font-weight:600}
+nav.rel a{display:block;padding:8px 0}footer{color:var(--mu);font-size:13px;padding-top:28px;padding-bottom:40px}</style>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Qué significa una relación de transmisión 1:2?", "acceptedAnswer": {"@type": "Answer", "text": "La polea motriz da dos vueltas por cada vuelta de la conducida: la velocidad se reduce a la mitad y el par se duplica, sin contar pérdidas."}}, {"@type": "Question", "name": "¿Qué diferencia hay entre reducción y multiplicación?", "acceptedAnswer": {"@type": "Answer", "text": "En la reducción la polea conducida es mayor (i > 1) y gira más despacio. En la multiplicación es menor (i < 1) y gira más rápido."}}, {"@type": "Question", "name": "¿Cómo calcular la relación de transmisión con las RPM?", "acceptedAnswer": {"@type": "Answer", "text": "Divide las RPM de la polea motriz entre las de la conducida: i = N1 / N2."}}]}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Calculadora de Poleas", "item": "https://calculadora-polias.asclabs.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Calculadora de relación de transmisión", "item": "https://calculadora-polias.asclabs.com.br/es/relacion-transmision/"}]}]</script>
+<script async src="https://pagead2.googleapis.com/pagead/js/adsbygoogle.js?client=ca-pub-3590770249573148" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div><a class="brand" href="/">Calculadora de Poleas</a><span class="lang"><a href="/relacao-transmissao/" hreflang="pt">PT</a><a href="/en/drive-ratio/" hreflang="en">EN</a><a href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">App Android</a></span></div></header>
+<main>
+<h1>Calculadora de relación de transmisión</h1>
+<p class="lead">La relación de transmisión indica cuántas vueltas da la polea motriz por cada vuelta de la conducida. Introduce los dos diámetros y verás la relación y el tipo de transmisión.</p>
+<div class="card">
+<label for="d1">Diámetro de la polea motriz (D1, mm)</label><input id="d1" inputmode="decimal" value="100" autocomplete="off"><label for="d2">Diámetro de la polea conducida (D2, mm)</label><input id="d2" inputmode="decimal" value="200" autocomplete="off">
+<button id="go" type="button">Calcular</button>
+<div id="res" aria-live="polite"></div>
+</div>
+<div class="cta">
+<a class="btn" href="/">Abrir la calculadora completa</a>
+<a class="btn alt" href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">Descargar en Google Play</a>
+</div>
+<h2>Fórmula de la relación de transmisión</h2><p class="formula">i = D2 / D1 = N1 / N2</p><p>Cuando <strong>i &gt; 1</strong> la polea conducida es mayor: hay <em>reducción</em> de velocidad y ganancia de par. Cuando <strong>i &lt; 1</strong> hay <em>multiplicación</em> de velocidad y pérdida de par. Con <strong>i = 1</strong> ambas poleas giran a la misma velocidad.</p><h2>Ejemplo resuelto</h2><p>Polea motriz de <strong>100 mm</strong> y conducida de <strong>200 mm</strong>:</p><p class="formula">i = 200 / 100 = 2, es decir, 1 : 2</p><p>Con un motor de 1750 RPM, la salida es 1750 / 2 = <strong>875 RPM</strong> y el par de salida es aproximadamente el doble del del motor, descontando pérdidas.</p><h2>Transmisiones en etapas</h2><p>Cuando la reducción necesaria es grande (más de 6:1 u 8:1 en correas), divídela en dos etapas. La relación total es el producto de las relaciones de cada etapa: <strong>i total = i1 × i2</strong>. Así las poleas mantienen un tamaño razonable y se conserva el ángulo de abrazamiento.</p>
+<h2>Preguntas frecuentes</h2>
+<details><summary>¿Qué significa una relación de transmisión 1:2?</summary><p>La polea motriz da dos vueltas por cada vuelta de la conducida: la velocidad se reduce a la mitad y el par se duplica, sin contar pérdidas.</p></details><details><summary>¿Qué diferencia hay entre reducción y multiplicación?</summary><p>En la reducción la polea conducida es mayor (i &gt; 1) y gira más despacio. En la multiplicación es menor (i &lt; 1) y gira más rápido.</p></details><details><summary>¿Cómo calcular la relación de transmisión con las RPM?</summary><p>Divide las RPM de la polea motriz entre las de la conducida: i = N1 / N2.</p></details>
+<h2>Otros cálculos</h2>
+<nav class="rel"><a href="/es/rpm-polea/">Calculadora de RPM de polea</a><a href="/es/longitud-correa/">Calculadora de longitud de correa</a></nav>
+</main>
+<footer>© 2026 ASCLABS. Cálculos teóricos: valídalos con un ingeniero responsable antes de aplicarlos en un proyecto.</footer>
+<script>
+(function(){
+var ids=["d1","d2"],T={"r": "Relación de transmisión (i)", "red": "reducción", "mul": "multiplicación", "dir": "directa"},MSG="Completa todos los campos con valores mayores que cero.";
+function fmt(x){return isFinite(x)?(Math.round(x*100)/100).toLocaleString('es'):'—'}
+function out(l,v){document.getElementById('res').innerHTML='<small>'+l+'</small><b>'+v+'</b>'}
+function run(){
+var v={};ids.forEach(function(k){v[k]=parseFloat(String(document.getElementById(k).value).replace(',','.'))});
+for(var k in v){if(!(v[k]>0)){document.getElementById('res').textContent=MSG;return}}
+var n1=v.n1,d1=v.d1,d2=v.d2,D=v.D,d=v.d,C=v.C;
+var i=d2/d1;out(T.r,'1 : '+fmt(i)+(i>1?' ('+T.red+')':i<1?' ('+T.mul+')':' ('+T.dir+')'));
+}
+document.getElementById('go').addEventListener('click',run);run();
+})();
+</script>
+</body>
+</html>

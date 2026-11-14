@@ -6,6 +6,7 @@
 <title>Calculadora de RPM de Polia (Motor e Movida) | ASCLABS</title>
 <meta name="description" content="Calcule o RPM da polia movida, o diâmetro das polias ou o RPM do motor. Fórmula N1×D1 = N2×D2 com exemplo resolvido, grátis e sem cadastro.">
 <link rel="canonical" href="https://calculadora-polias.asclabs.com.br/rpm-polia/">
+<link rel="alternate" hreflang="pt" href="https://calculadora-polias.asclabs.com.br/rpm-polia/"><link rel="alternate" hreflang="es" href="https://calculadora-polias.asclabs.com.br/es/rpm-polea/"><link rel="alternate" hreflang="en" href="https://calculadora-polias.asclabs.com.br/en/pulley-rpm/"><link rel="alternate" hreflang="x-default" href="https://calculadora-polias.asclabs.com.br/rpm-polia/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Calculadora de RPM de Polia (Motor e Movida) | ASCLABS">
 <meta property="og:description" content="Calcule o RPM da polia movida, o diâmetro das polias ou o RPM do motor. Fórmula N1×D1 = N2×D2 com exemplo resolvido, grátis e sem cadastro.">
@@ -16,8 +17,8 @@
 <style>:root{--bg:#0e1014;--sf:#161a20;--bd:#262b34;--ac:#22d3ee;--tx:#f1f5f9;--mu:#8a94a6}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 a{color:var(--ac)}main,footer{max-width:760px;margin:0 auto;padding:0 16px}
-header{border-bottom:1px solid var(--bd)}header div{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
-.brand{font-weight:700;color:var(--tx);text-decoration:none}h1{font-size:28px;line-height:1.25;margin:28px 0 8px}h2{font-size:20px;margin:32px 0 8px}
+header{border-bottom:1px solid var(--bd)}header div{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;gap:12px}
+.brand{font-weight:700;color:var(--tx);text-decoration:none}.lang a{margin-left:10px;text-decoration:none;font-size:14px}h1{font-size:28px;line-height:1.25;margin:28px 0 8px}h2{font-size:20px;margin:32px 0 8px}
 p{margin:8px 0}.lead{color:var(--mu)}.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:20px 0}
 label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
 button,.btn{display:inline-block;margin-top:14px;padding:13px 18px;border-radius:10px;border:0;background:var(--ac);color:#0e1014;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer}
@@ -29,7 +30,7 @@ nav.rel a{display:block;padding:8px 0}footer{color:var(--mu);font-size:13px;padd
 <script async src="https://pagead2.googleapis.com/pagead/js/adsbygoogle.js?client=ca-pub-3590770249573148" crossorigin="anonymous"></script>
 </head>
 <body>
-<header><div><a class="brand" href="/">Calculadora de Polias</a><a href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">App Android</a></div></header>
+<header><div><a class="brand" href="/">Calculadora de Polias</a><span class="lang"><a href="/es/rpm-polea/" hreflang="es">ES</a><a href="/en/pulley-rpm/" hreflang="en">EN</a><a href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">App Android</a></span></div></header>
 <main>
 <h1>Calculadora de RPM de polia</h1>
 <p class="lead">Descubra a rotação da polia movida (ou o diâmetro que você precisa) a partir do motor e do diâmetro das polias. Preencha os campos e o resultado é calculado na hora.</p>
@@ -51,14 +52,14 @@ nav.rel a{display:block;padding:8px 0}footer{color:var(--mu);font-size:13px;padd
 <footer>© 2026 ASCLABS. Cálculos teóricos: valide com um engenheiro responsável antes de aplicar em projeto.</footer>
 <script>
 (function(){
-var ids=["n1","d1","d2"];
+var ids=["n1","d1","d2"],T={"r": "RPM da polia movida (N2)"},MSG="Preencha todos os campos com valores maiores que zero.";
 function fmt(x){return isFinite(x)?(Math.round(x*100)/100).toLocaleString('pt-BR'):'—'}
 function out(l,v){document.getElementById('res').innerHTML='<small>'+l+'</small><b>'+v+'</b>'}
 function run(){
 var v={};ids.forEach(function(k){v[k]=parseFloat(String(document.getElementById(k).value).replace(',','.'))});
-for(var k in v){if(!(v[k]>0)){document.getElementById('res').textContent='Preencha todos os campos com valores maiores que zero.';return}}
+for(var k in v){if(!(v[k]>0)){document.getElementById('res').textContent=MSG;return}}
 var n1=v.n1,d1=v.d1,d2=v.d2,D=v.D,d=v.d,C=v.C;
-var r=n1*d1/d2;out('RPM da polia movida (N2)', fmt(r)+' RPM');
+var r=n1*d1/d2;out(T.r,fmt(r)+' RPM');
 }
 document.getElementById('go').addEventListener('click',run);run();
 })();
