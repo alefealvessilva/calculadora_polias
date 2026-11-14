@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:calculadora_polias/core/ads/ad_helper.dart';
+import 'package:calculadora_polias/core/review/review_prompt.dart';
 import 'package:calculadora_polias/core/utils/unit_converter.dart';
 import 'package:calculadora_polias/domain/usecases/calculations_usecases.dart';
 import 'package:calculadora_polias/presentation/providers/app_providers.dart';
@@ -67,6 +68,7 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
       );
       ref.read(historyProvider.notifier).addHistoryItem(item);
       InterstitialAdManager.incrementAndMaybeShowAd();
+      ReviewPrompt.onCalculationSuccess();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.calcError(e)), backgroundColor: Colors.redAccent),
