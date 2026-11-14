@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora de RPM de Polia (Motor e Movida) | ASCLABS</title>
+<meta name="description" content="Calcule o RPM da polia movida, o diâmetro das polias ou o RPM do motor. Fórmula N1×D1 = N2×D2 com exemplo resolvido, grátis e sem cadastro.">
+<link rel="canonical" href="https://calculadora-polias.asclabs.com.br/rpm-polia/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculadora de RPM de Polia (Motor e Movida) | ASCLABS">
+<meta property="og:description" content="Calcule o RPM da polia movida, o diâmetro das polias ou o RPM do motor. Fórmula N1×D1 = N2×D2 com exemplo resolvido, grátis e sem cadastro.">
+<meta property="og:url" content="https://calculadora-polias.asclabs.com.br/rpm-polia/">
+<meta property="og:image" content="https://calculadora-polias.asclabs.com.br/icons/Icon-512.png">
+<meta name="theme-color" content="#0e1014">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>:root{--bg:#0e1014;--sf:#161a20;--bd:#262b34;--ac:#22d3ee;--tx:#f1f5f9;--mu:#8a94a6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--ac)}main,footer{max-width:760px;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--bd)}header div{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
+.brand{font-weight:700;color:var(--tx);text-decoration:none}h1{font-size:28px;line-height:1.25;margin:28px 0 8px}h2{font-size:20px;margin:32px 0 8px}
+p{margin:8px 0}.lead{color:var(--mu)}.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:20px 0}
+label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
+button,.btn{display:inline-block;margin-top:14px;padding:13px 18px;border-radius:10px;border:0;background:var(--ac);color:#0e1014;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer}
+.btn.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}#res{margin-top:14px;min-height:24px}#res small{display:block;color:var(--mu)}#res b{font-size:26px;color:var(--ac)}
+.formula{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.cta{display:flex;gap:10px;flex-wrap:wrap}details{border-bottom:1px solid var(--bd);padding:10px 0}summary{cursor:pointer;font-weight:600}
+nav.rel a{display:block;padding:8px 0}footer{color:var(--mu);font-size:13px;padding-top:28px;padding-bottom:40px}</style>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Como calcular o RPM da polia movida?", "acceptedAnswer": {"@type": "Answer", "text": "Multiplique o RPM do motor pelo diâmetro da polia motora e divida pelo diâmetro da polia movida: N2 = N1 × D1 / D2."}}, {"@type": "Question", "name": "Polia maior gira mais rápido ou mais devagar?", "acceptedAnswer": {"@type": "Answer", "text": "Mais devagar. Quanto maior a polia movida em relação à motora, menor o RPM de saída e maior o torque."}}, {"@type": "Question", "name": "Posso usar polegadas em vez de milímetros?", "acceptedAnswer": {"@type": "Answer", "text": "Pode, desde que use a mesma unidade nas duas polias. A relação depende apenas da proporção entre os diâmetros."}}]}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Calculadora de Polias", "item": "https://calculadora-polias.asclabs.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Calculadora de RPM de polia", "item": "https://calculadora-polias.asclabs.com.br/rpm-polia/"}]}]</script>
+<script async src="https://pagead2.googleapis.com/pagead/js/adsbygoogle.js?client=ca-pub-3590770249573148" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div><a class="brand" href="/">Calculadora de Polias</a><a href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">App Android</a></div></header>
+<main>
+<h1>Calculadora de RPM de polia</h1>
+<p class="lead">Descubra a rotação da polia movida (ou o diâmetro que você precisa) a partir do motor e do diâmetro das polias. Preencha os campos e o resultado é calculado na hora.</p>
+<div class="card">
+<label for="n1">RPM do motor (N1)</label><input id="n1" inputmode="decimal" value="1750" autocomplete="off"><label for="d1">Diâmetro da polia motora (D1, mm)</label><input id="d1" inputmode="decimal" value="100" autocomplete="off"><label for="d2">Diâmetro da polia movida (D2, mm)</label><input id="d2" inputmode="decimal" value="200" autocomplete="off">
+<button id="go" type="button">Calcular</button>
+<div id="res" aria-live="polite"></div>
+</div>
+<div class="cta">
+<a class="btn" href="/">Abrir a calculadora completa</a>
+<a class="btn alt" href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">Baixar na Play Store</a>
+</div>
+<h2>Fórmula do RPM de polias</h2><p>Em uma transmissão por correia sem escorregamento, a velocidade linear da correia é a mesma nas duas polias. Isso gera a relação:</p><p class="formula">N1 × D1 = N2 × D2</p><p>Onde <strong>N1</strong> é o RPM da polia motora, <strong>D1</strong> o diâmetro dela, <strong>N2</strong> o RPM da polia movida e <strong>D2</strong> o diâmetro dela. Isolando cada termo:</p><ul><li>N2 = N1 × D1 / D2</li><li>N1 = N2 × D2 / D1</li><li>D2 = N1 × D1 / N2</li><li>D1 = N2 × D2 / N1</li></ul><h2>Exemplo resolvido</h2><p>Motor de <strong>1750 RPM</strong> com polia de <strong>100 mm</strong> acionando uma polia de <strong>200 mm</strong>:</p><p class="formula">N2 = 1750 × 100 / 200 = 875 RPM</p><p>A polia maior gira mais devagar: a rotação cai pela metade e o torque disponível aumenta na mesma proporção (desprezando perdas).</p><h2>Como escolher o diâmetro das polias</h2><p>Para reduzir a rotação, use uma polia movida maior que a motora. Para aumentar, faça o contrário. Respeite o diâmetro mínimo recomendado pelo fabricante da correia, pois polias muito pequenas reduzem a vida útil. Na prática, o escorregamento da correia faz o RPM real ficar 1% a 3% abaixo do teórico em correias em V.</p>
+<h2>Perguntas frequentes</h2>
+<details><summary>Como calcular o RPM da polia movida?</summary><p>Multiplique o RPM do motor pelo diâmetro da polia motora e divida pelo diâmetro da polia movida: N2 = N1 × D1 / D2.</p></details><details><summary>Polia maior gira mais rápido ou mais devagar?</summary><p>Mais devagar. Quanto maior a polia movida em relação à motora, menor o RPM de saída e maior o torque.</p></details><details><summary>Posso usar polegadas em vez de milímetros?</summary><p>Pode, desde que use a mesma unidade nas duas polias. A relação depende apenas da proporção entre os diâmetros.</p></details>
+<h2>Outros cálculos</h2>
+<nav class="rel"><a href="/comprimento-correia/">Calculadora de comprimento de correia</a><a href="/relacao-transmissao/">Calculadora de relação de transmissão</a></nav>
+</main>
+<footer>© 2026 ASCLABS. Cálculos teóricos: valide com um engenheiro responsável antes de aplicar em projeto.</footer>
+<script>
+(function(){
+var ids=["n1","d1","d2"];
+function fmt(x){return isFinite(x)?(Math.round(x*100)/100).toLocaleString('pt-BR'):'—'}
+function out(l,v){document.getElementById('res').innerHTML='<small>'+l+'</small><b>'+v+'</b>'}
+function run(){
+var v={};ids.forEach(function(k){v[k]=parseFloat(String(document.getElementById(k).value).replace(',','.'))});
+for(var k in v){if(!(v[k]>0)){document.getElementById('res').textContent='Preencha todos os campos com valores maiores que zero.';return}}
+var n1=v.n1,d1=v.d1,d2=v.d2,D=v.D,d=v.d,C=v.C;
+var r=n1*d1/d2;out('RPM da polia movida (N2)', fmt(r)+' RPM');
+}
+document.getElementById('go').addEventListener('click',run);run();
+})();
+</script>
+</body>
+</html>

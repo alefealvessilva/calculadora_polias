@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora de Relação de Transmissão de Polias | ASCLABS</title>
+<meta name="description" content="Calcule a relação de transmissão (i = D2/D1 = N1/N2) entre duas polias. Entenda redução e multiplicação de velocidade com exemplo resolvido.">
+<link rel="canonical" href="https://calculadora-polias.asclabs.com.br/relacao-transmissao/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculadora de Relação de Transmissão de Polias | ASCLABS">
+<meta property="og:description" content="Calcule a relação de transmissão (i = D2/D1 = N1/N2) entre duas polias. Entenda redução e multiplicação de velocidade com exemplo resolvido.">
+<meta property="og:url" content="https://calculadora-polias.asclabs.com.br/relacao-transmissao/">
+<meta property="og:image" content="https://calculadora-polias.asclabs.com.br/icons/Icon-512.png">
+<meta name="theme-color" content="#0e1014">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>:root{--bg:#0e1014;--sf:#161a20;--bd:#262b34;--ac:#22d3ee;--tx:#f1f5f9;--mu:#8a94a6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--ac)}main,footer{max-width:760px;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--bd)}header div{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
+.brand{font-weight:700;color:var(--tx);text-decoration:none}h1{font-size:28px;line-height:1.25;margin:28px 0 8px}h2{font-size:20px;margin:32px 0 8px}
+p{margin:8px 0}.lead{color:var(--mu)}.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:20px 0}
+label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
+button,.btn{display:inline-block;margin-top:14px;padding:13px 18px;border-radius:10px;border:0;background:var(--ac);color:#0e1014;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer}
+.btn.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}#res{margin-top:14px;min-height:24px}#res small{display:block;color:var(--mu)}#res b{font-size:26px;color:var(--ac)}
+.formula{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.cta{display:flex;gap:10px;flex-wrap:wrap}details{border-bottom:1px solid var(--bd);padding:10px 0}summary{cursor:pointer;font-weight:600}
+nav.rel a{display:block;padding:8px 0}footer{color:var(--mu);font-size:13px;padding-top:28px;padding-bottom:40px}</style>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "O que significa relação de transmissão 1:2?", "acceptedAnswer": {"@type": "Answer", "text": "A polia motora dá duas voltas para cada volta da movida: a velocidade cai pela metade e o torque dobra, sem considerar perdas."}}, {"@type": "Question", "name": "Qual a diferença entre redução e multiplicação?", "acceptedAnswer": {"@type": "Answer", "text": "Na redução a polia movida é maior (i > 1) e gira mais devagar. Na multiplicação a movida é menor (i < 1) e gira mais rápido."}}, {"@type": "Question", "name": "Como calcular a relação de transmissão pelo RPM?", "acceptedAnswer": {"@type": "Answer", "text": "Divida o RPM da polia motora pelo RPM da movida: i = N1 / N2."}}]}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Calculadora de Polias", "item": "https://calculadora-polias.asclabs.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Calculadora de relação de transmissão", "item": "https://calculadora-polias.asclabs.com.br/relacao-transmissao/"}]}]</script>
+<script async src="https://pagead2.googleapis.com/pagead/js/adsbygoogle.js?client=ca-pub-3590770249573148" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div><a class="brand" href="/">Calculadora de Polias</a><a href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">App Android</a></div></header>
+<main>
+<h1>Calculadora de relação de transmissão</h1>
+<p class="lead">A relação de transmissão mostra quantas voltas a polia motora dá para cada volta da movida. Informe os dois diâmetros e veja a relação e o tipo de transmissão.</p>
+<div class="card">
+<label for="d1">Diâmetro da polia motora (D1, mm)</label><input id="d1" inputmode="decimal" value="100" autocomplete="off"><label for="d2">Diâmetro da polia movida (D2, mm)</label><input id="d2" inputmode="decimal" value="200" autocomplete="off">
+<button id="go" type="button">Calcular</button>
+<div id="res" aria-live="polite"></div>
+</div>
+<div class="cta">
+<a class="btn" href="/">Abrir a calculadora completa</a>
+<a class="btn alt" href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">Baixar na Play Store</a>
+</div>
+<h2>Fórmula da relação de transmissão</h2><p class="formula">i = D2 / D1 = N1 / N2</p><p>Quando <strong>i &gt; 1</strong> a polia movida é maior: há <em>redução</em> de velocidade e ganho de torque. Quando <strong>i &lt; 1</strong> há <em>multiplicação</em> de velocidade e perda de torque. Com <strong>i = 1</strong> as duas polias giram na mesma rotação.</p><h2>Exemplo resolvido</h2><p>Polia motora de <strong>100 mm</strong> e movida de <strong>200 mm</strong>:</p><p class="formula">i = 200 / 100 = 2, ou seja, 1 : 2</p><p>Com um motor de 1750 RPM, a saída é 1750 / 2 = <strong>875 RPM</strong>, e o torque na saída é cerca de duas vezes o do motor, descontadas as perdas.</p><h2>Transmissões em estágios</h2><p>Quando a redução necessária é grande (acima de 6:1 ou 8:1 em correias), divida em dois estágios. A relação total é o produto das relações de cada estágio: <strong>i total = i1 × i2</strong>. Isso mantém as polias com tamanho razoável e preserva o ângulo de abraçamento.</p>
+<h2>Perguntas frequentes</h2>
+<details><summary>O que significa relação de transmissão 1:2?</summary><p>A polia motora dá duas voltas para cada volta da movida: a velocidade cai pela metade e o torque dobra, sem considerar perdas.</p></details><details><summary>Qual a diferença entre redução e multiplicação?</summary><p>Na redução a polia movida é maior (i &gt; 1) e gira mais devagar. Na multiplicação a movida é menor (i &lt; 1) e gira mais rápido.</p></details><details><summary>Como calcular a relação de transmissão pelo RPM?</summary><p>Divida o RPM da polia motora pelo RPM da movida: i = N1 / N2.</p></details>
+<h2>Outros cálculos</h2>
+<nav class="rel"><a href="/rpm-polia/">Calculadora de RPM de polia</a><a href="/comprimento-correia/">Calculadora de comprimento de correia</a></nav>
+</main>
+<footer>© 2026 ASCLABS. Cálculos teóricos: valide com um engenheiro responsável antes de aplicar em projeto.</footer>
+<script>
+(function(){
+var ids=["d1","d2"];
+function fmt(x){return isFinite(x)?(Math.round(x*100)/100).toLocaleString('pt-BR'):'—'}
+function out(l,v){document.getElementById('res').innerHTML='<small>'+l+'</small><b>'+v+'</b>'}
+function run(){
+var v={};ids.forEach(function(k){v[k]=parseFloat(String(document.getElementById(k).value).replace(',','.'))});
+for(var k in v){if(!(v[k]>0)){document.getElementById('res').textContent='Preencha todos os campos com valores maiores que zero.';return}}
+var n1=v.n1,d1=v.d1,d2=v.d2,D=v.D,d=v.d,C=v.C;
+var i=d2/d1;out('Relação de transmissão (i)', '1 : '+fmt(i)+(i>1?' (redução)':i<1?' (multiplicação)':' (direta)'));
+}
+document.getElementById('go').addEventListener('click',run);run();
+})();
+</script>
+</body>
+</html>

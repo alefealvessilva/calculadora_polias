@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora de Comprimento de Correia e Distância entre Centros | ASCLABS</title>
+<meta name="description" content="Calcule o comprimento da correia a partir dos diâmetros das polias e da distância entre centros, ou o inverso. Fórmula aberta com exemplo resolvido.">
+<link rel="canonical" href="https://calculadora-polias.asclabs.com.br/comprimento-correia/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculadora de Comprimento de Correia e Distância entre Centros | ASCLABS">
+<meta property="og:description" content="Calcule o comprimento da correia a partir dos diâmetros das polias e da distância entre centros, ou o inverso. Fórmula aberta com exemplo resolvido.">
+<meta property="og:url" content="https://calculadora-polias.asclabs.com.br/comprimento-correia/">
+<meta property="og:image" content="https://calculadora-polias.asclabs.com.br/icons/Icon-512.png">
+<meta name="theme-color" content="#0e1014">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>:root{--bg:#0e1014;--sf:#161a20;--bd:#262b34;--ac:#22d3ee;--tx:#f1f5f9;--mu:#8a94a6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--ac)}main,footer{max-width:760px;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--bd)}header div{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
+.brand{font-weight:700;color:var(--tx);text-decoration:none}h1{font-size:28px;line-height:1.25;margin:28px 0 8px}h2{font-size:20px;margin:32px 0 8px}
+p{margin:8px 0}.lead{color:var(--mu)}.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:20px 0}
+label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
+button,.btn{display:inline-block;margin-top:14px;padding:13px 18px;border-radius:10px;border:0;background:var(--ac);color:#0e1014;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer}
+.btn.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}#res{margin-top:14px;min-height:24px}#res small{display:block;color:var(--mu)}#res b{font-size:26px;color:var(--ac)}
+.formula{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.cta{display:flex;gap:10px;flex-wrap:wrap}details{border-bottom:1px solid var(--bd);padding:10px 0}summary{cursor:pointer;font-weight:600}
+nav.rel a{display:block;padding:8px 0}footer{color:var(--mu);font-size:13px;padding-top:28px;padding-bottom:40px}</style>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Como calcular o comprimento de uma correia?", "acceptedAnswer": {"@type": "Answer", "text": "Use L = 2C + 1,57(D + d) + (D − d)² / 4C, com C a distância entre centros e D e d os diâmetros das polias."}}, {"@type": "Question", "name": "A fórmula serve para correia em V e correia dentada?", "acceptedAnswer": {"@type": "Answer", "text": "Serve como aproximação para ambas. O comprimento final deve ser arredondado para o tamanho padronizado do fabricante, e para dentada confira o passo."}}, {"@type": "Question", "name": "Como achar a distância entre centros conhecendo a correia?", "acceptedAnswer": {"@type": "Answer", "text": "Isole C na fórmula do comprimento. O aplicativo faz esse cálculo deixando o campo de distância em branco."}}]}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Calculadora de Polias", "item": "https://calculadora-polias.asclabs.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Calculadora de comprimento de correia", "item": "https://calculadora-polias.asclabs.com.br/comprimento-correia/"}]}]</script>
+<script async src="https://pagead2.googleapis.com/pagead/js/adsbygoogle.js?client=ca-pub-3590770249573148" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div><a class="brand" href="/">Calculadora de Polias</a><a href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">App Android</a></div></header>
+<main>
+<h1>Calculadora de comprimento de correia</h1>
+<p class="lead">Informe o diâmetro das duas polias e a distância entre os centros para obter o comprimento aproximado da correia aberta. No app você também descobre a distância ou um diâmetro a partir do comprimento.</p>
+<div class="card">
+<label for="D">Polia maior (D, mm)</label><input id="D" inputmode="decimal" value="200" autocomplete="off"><label for="d">Polia menor (d, mm)</label><input id="d" inputmode="decimal" value="100" autocomplete="off"><label for="C">Distância entre centros (C, mm)</label><input id="C" inputmode="decimal" value="500" autocomplete="off">
+<button id="go" type="button">Calcular</button>
+<div id="res" aria-live="polite"></div>
+</div>
+<div class="cta">
+<a class="btn" href="/">Abrir a calculadora completa</a>
+<a class="btn alt" href="https://play.google.com/store/apps/details?id=br.com.asclabs.calculadorapolias" rel="noopener">Baixar na Play Store</a>
+</div>
+<h2>Fórmula do comprimento da correia</h2><p>Para correia aberta (as duas polias girando no mesmo sentido), a fórmula aproximada mais usada é:</p><p class="formula">L = 2C + 1,57 × (D + d) + (D − d)² / (4C)</p><p>Onde <strong>L</strong> é o comprimento da correia, <strong>C</strong> a distância entre os centros dos eixos, <strong>D</strong> o diâmetro da polia maior e <strong>d</strong> o da menor. A fórmula vale quando a distância entre centros é bem maior que a diferença entre os diâmetros.</p><h2>Exemplo resolvido</h2><p>Polias de <strong>200 mm</strong> e <strong>100 mm</strong> com <strong>500 mm</strong> entre centros:</p><p class="formula">L = 2×500 + 1,57×(200+100) + (200−100)² / (4×500)<br>L = 1000 + 471 + 5 = 1476 mm</p><p>Escolha a correia padronizada de comprimento mais próximo e ajuste a distância entre centros para tensionar.</p><h2>Distância entre centros mínima e máxima</h2><p>Como regra prática, mantenha a distância entre centros entre <strong>0,7 × (D + d)</strong> e <strong>2 × (D + d)</strong>. Muito curta reduz o ângulo de abraçamento e a correia escorrega; muito longa causa vibração. Deixe sempre folga de ajuste para instalar e esticar a correia.</p>
+<h2>Perguntas frequentes</h2>
+<details><summary>Como calcular o comprimento de uma correia?</summary><p>Use L = 2C + 1,57(D + d) + (D − d)² / 4C, com C a distância entre centros e D e d os diâmetros das polias.</p></details><details><summary>A fórmula serve para correia em V e correia dentada?</summary><p>Serve como aproximação para ambas. O comprimento final deve ser arredondado para o tamanho padronizado do fabricante, e para dentada confira o passo.</p></details><details><summary>Como achar a distância entre centros conhecendo a correia?</summary><p>Isole C na fórmula do comprimento. O aplicativo faz esse cálculo deixando o campo de distância em branco.</p></details>
+<h2>Outros cálculos</h2>
+<nav class="rel"><a href="/rpm-polia/">Calculadora de RPM de polia</a><a href="/relacao-transmissao/">Calculadora de relação de transmissão</a></nav>
+</main>
+<footer>© 2026 ASCLABS. Cálculos teóricos: valide com um engenheiro responsável antes de aplicar em projeto.</footer>
+<script>
+(function(){
+var ids=["D","d","C"];
+function fmt(x){return isFinite(x)?(Math.round(x*100)/100).toLocaleString('pt-BR'):'—'}
+function out(l,v){document.getElementById('res').innerHTML='<small>'+l+'</small><b>'+v+'</b>'}
+function run(){
+var v={};ids.forEach(function(k){v[k]=parseFloat(String(document.getElementById(k).value).replace(',','.'))});
+for(var k in v){if(!(v[k]>0)){document.getElementById('res').textContent='Preencha todos os campos com valores maiores que zero.';return}}
+var n1=v.n1,d1=v.d1,d2=v.d2,D=v.D,d=v.d,C=v.C;
+var L=2*C+1.57*(D+d)+Math.pow(D-d,2)/(4*C);out('Comprimento da correia (L)', fmt(L)+' mm');
+}
+document.getElementById('go').addEventListener('click',run);run();
+})();
+</script>
+</body>
+</html>
