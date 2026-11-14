@@ -30,7 +30,8 @@ jobs:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
           mkdir -p android/app/keystore
-          echo "$KEYSTORE_BASE64" | base64 -d > android/app/keystore/upload-keystore.jks
+          echo "$KEYSTORE_BASE64" | tr -d '
+ ' | base64 -d > android/app/keystore/upload-keystore.jks
           printf '%s\n' "$KEY_PROPERTIES" > android/key.properties
           printf '%s\n' "$ENV_FILE" > .env
 
