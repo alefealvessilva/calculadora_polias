@@ -30,10 +30,9 @@ jobs:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
           mkdir -p android/app/keystore
-          echo "$KEYSTORE_BASE64" | tr -d '
- ' | base64 -d > android/app/keystore/upload-keystore.jks
-          printf '%s\n' "$KEY_PROPERTIES" > android/key.properties
-          printf '%s\n' "$ENV_FILE" > .env
+          echo "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 -d > android/app/keystore/upload-keystore.jks
+          printf '%s\n' "$KEY_PROPERTIES" | tr -d '\r' > android/key.properties
+          printf '%s\n' "$ENV_FILE" | tr -d '\r' > .env
 
       - run: flutter pub get
       - run: flutter analyze
