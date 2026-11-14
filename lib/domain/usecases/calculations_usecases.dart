@@ -1,5 +1,13 @@
 import 'dart:math';
 
+/// Erros de cálculo independentes de idioma; a UI traduz cada código.
+enum CalcError { zero, oneBlank, geometry, invalidResult }
+
+class CalcException implements Exception {
+  final CalcError error;
+  const CalcException(this.error);
+}
+
 enum CalculationType {
   transmission,
   beltLength,
@@ -63,7 +71,7 @@ class CalculationsUsecases {
     required double drivenPulleyDiam,
   }) {
     if (drivingPulleyDiam == 0 || drivenPulleyDiam == 0) {
-      throw ArgumentError('O diâmetro das polias não pode ser zero');
+      throw CalcException(CalcError.zero);
     }
     
     // N1 * D1 = N2 * D2  => N2 = (N1 * D1) / D2
@@ -89,7 +97,7 @@ class CalculationsUsecases {
     required double centerDistance,
   }) {
     if (centerDistance == 0) {
-      throw ArgumentError('Distância não pode ser zero');
+      throw CalcException(CalcError.zero);
     }
 
     double D = largerDiameter;
@@ -112,7 +120,7 @@ class CalculationsUsecases {
     required double targetOutputRpm,
   }) {
     if (targetOutputRpm == 0) {
-      throw ArgumentError('RPM alvo não pode ser zero');
+      throw CalcException(CalcError.zero);
     }
     return (motorRpm * drivingDiameter) / targetOutputRpm;
   }
@@ -127,20 +135,20 @@ class CalculationsUsecases {
   }) {
     int nullCount = [n1, d1, n2, d2].where((e) => e == null).length;
     if (nullCount != 1) {
-      throw ArgumentError('Deixe exatamente UM campo em branco para ser calculado.');
+      throw CalcException(CalcError.oneBlank);
     }
 
     if (n1 == null) {
-      if (d1 == 0) throw ArgumentError('D1 não pode ser zero');
+      if (d1 == 0) throw CalcException(CalcError.zero);
       n1 = (n2! * d2!) / d1!;
     } else if (d1 == null) {
-      if (n1 == 0) throw ArgumentError('N1 não pode ser zero');
+      if (n1 == 0) throw CalcException(CalcError.zero);
       d1 = (n2! * d2!) / n1;
     } else if (n2 == null) {
-      if (d2 == 0) throw ArgumentError('D2 não pode ser zero');
+      if (d2 == 0) throw CalcException(CalcError.zero);
       n2 = (n1 * d1) / d2!;
     } else if (d2 == null) {
-      if (n2 == 0) throw ArgumentError('N2 não pode ser zero');
+      if (n2 == 0) throw CalcException(CalcError.zero);
       d2 = (n1 * d1) / n2;
     }
 
@@ -161,42 +169,42 @@ class CalculationsUsecases {
   }) {
     int nullCount = [d1, d2, c, l].where((e) => e == null).length;
     if (nullCount != 1) {
-      throw ArgumentError('Deixe exatamente UM campo em branco para ser calculado.');
+      throw CalcException(CalcError.oneBlank);
     }
 
     if (l == null) {
-      if (c == 0) throw ArgumentError('C não pode ser zero');
+      if (c == 0) throw CalcException(CalcError.zero);
       l = 2 * c! + 1.57 * (d1! + d2!) + pow(d1 - d2, 2) / (4 * c);
     } else if (c == null) {
       double A = 8.0;
       double B = 6.28 * (d1! + d2!) - 4 * l;
       double co = pow(d1 - d2, 2).toDouble();
       double delta = B * B - 4 * A * co;
-      if (delta < 0) throw ArgumentError('Geometria fisicamente impossível para essa correia.');
+      if (delta < 0) throw CalcException(CalcError.geometry);
       double c1 = (-B + sqrt(delta)) / (2 * A);
       double c2 = (-B - sqrt(delta)) / (2 * A);
       c = max(c1, c2);
-      if (c <= 0) throw ArgumentError('Distância calculada foi negativa ou zero.');
+      if (c <= 0) throw CalcException(CalcError.zero);
     } else if (d1 == null) {
       double A = 1.0;
       double B = 6.28 * c - 2 * d2!;
       double co = 8 * c * c + 6.28 * c * d2 + d2 * d2 - 4 * c * l;
       double delta = B * B - 4 * A * co;
-      if (delta < 0) throw ArgumentError('Geometria fisicamente impossível.');
+      if (delta < 0) throw CalcException(CalcError.geometry);
       double res1 = (-B + sqrt(delta)) / 2;
       double res2 = (-B - sqrt(delta)) / 2;
       d1 = max(res1, res2);
-      if (d1 <= 0) throw ArgumentError('Diâmetro resultante inválido.');
+      if (d1 <= 0) throw CalcException(CalcError.invalidResult);
     } else if (d2 == null) {
       double A = 1.0;
       double B = 6.28 * c - 2 * d1;
       double co = 8 * c * c + 6.28 * c * d1 + d1 * d1 - 4 * c * l;
       double delta = B * B - 4 * A * co;
-      if (delta < 0) throw ArgumentError('Geometria fisicamente impossível.');
+      if (delta < 0) throw CalcException(CalcError.geometry);
       double res1 = (-B + sqrt(delta)) / 2;
       double res2 = (-B - sqrt(delta)) / 2;
       d2 = max(res1, res2);
-      if (d2 <= 0) throw ArgumentError('Diâmetro resultante inválido.');
+      if (d2 <= 0) throw CalcException(CalcError.invalidResult);
     }
 
     return BeltDynamicResult(

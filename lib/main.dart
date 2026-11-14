@@ -1,73 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'core/theme/app_theme.dart';
+import 'l10n/gen/app_localizations.dart';
 import 'presentation/pages/home_page.dart';
-import 'presentation/pages/splash_page.dart';
 
-void main() async {
-  // Garantir inicialização básica dos bindings
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const ProviderScope(child: CalculadoraPoliasCorreiasApp()));
+  // .env só guarda os IDs de anúncio; sem ele o app roda sem anúncios.
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (_) {
+    debugPrint('Sem .env: anúncios desativados.');
+  }
+  await initializeDateFormatting();
+
+  runApp(const ProviderScope(child: CalculadoraApp()));
 }
 
-class CalculadoraPoliasCorreiasApp extends StatefulWidget {
-  const CalculadoraPoliasCorreiasApp({super.key});
-
-  @override
-  State<CalculadoraPoliasCorreiasApp> createState() =>
-      _CalculadoraPoliasCorreiasAppState();
-}
-
-class _CalculadoraPoliasCorreiasAppState
-    extends State<CalculadoraPoliasCorreiasApp> {
-  bool _initialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initApp();
-  }
-
-  Future<void> _initApp() async {
-    // 1. Carregar variáveis de ambiente de forma segura
-    try {
-      await dotenv.load(fileName: ".env");
-    } catch (e) {
-      debugPrint('Aviso: Arquivo .env não encontrado. Anúncios serão desativados.');
-    }
-
-    // 2. Configurações Globais
-    GoogleFonts.config.allowRuntimeFetching = true;
-    await initializeDateFormatting('pt_BR', null);
-
-    // 3. "Warm up" das fontes GoogleFonts
-    // ignore: unused_local_variable
-    final theme = AppTheme.darkTheme;
-    await GoogleFonts.pendingFonts();
-
-    // 4. Pequeno delay para garantir que a Splash seja vista
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (mounted) {
-      setState(() {
-        _initialized = true;
-      });
-    }
-  }
+class CalculadoraApp extends StatelessWidget {
+  const CalculadoraApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cálculo de RPM. Polias e Correias',
+      // Idioma segue o aparelho/navegador: pt, es ou en (fallback pt).
+      onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
-      darkTheme: AppTheme.darkTheme,
       theme: AppTheme.darkTheme,
-      home: _initialized ? const HomePage() : const SplashPage(),
+      darkTheme: AppTheme.darkTheme,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      localeResolutionCallback: (locale, supported) {
+        for (final s in supported) {
+          if (s.languageCode == locale?.languageCode) return s;
+        }
+        return const Locale('pt');
+      },
+      home: const HomePage(),
     );
   }
 }

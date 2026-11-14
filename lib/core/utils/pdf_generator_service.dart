@@ -7,8 +7,25 @@ import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
 import 'web_utils.dart';
 
+/// Textos fixos do relatório, já traduzidos pela UI.
+class PdfLabels {
+  final String appTitle, params, results, diagram, formulas, warning, warningText, informative, locale;
+  const PdfLabels({
+    required this.appTitle,
+    required this.params,
+    required this.results,
+    required this.diagram,
+    required this.formulas,
+    required this.warning,
+    required this.warningText,
+    required this.informative,
+    required this.locale,
+  });
+}
+
 class PdfGeneratorService {
   static Future<void> exportCalculation({
+    required PdfLabels labels,
     required String title,
     required Map<String, String> inputs,
     required Map<String, String> results,
@@ -19,7 +36,7 @@ class PdfGeneratorService {
     WebUtils.showNativeLoader();
     
     try {
-      final date = DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
+      final date = DateFormat.yMd(labels.locale).add_Hm().format(DateTime.now());
 
       // Pequeno delay para garantir que o loader JS seja visível
       await Future.delayed(const Duration(milliseconds: 100));
@@ -29,6 +46,7 @@ class PdfGeneratorService {
       final asclabsData = (await rootBundle.load('assets/images/logo_asclabs.png')).buffer.asUint8List();      // 3. Processar (Síncrono na thread principal para evitar erros de Binding e manter User Gesture)
       final pdfBytes = await _generatePdfBytes({
         'title': title,
+        'labels': labels,
         'inputs': inputs,
         'results': results,
         'formulas': formulas,
@@ -61,6 +79,7 @@ class PdfGeneratorService {
     final List<String> formulas = params['formulas'];
     final Map<String, double> diagramData = params['diagramData'];
     final String date = params['date'];
+    final PdfLabels labels = params['labels'];
 
     final appLogo = pw.MemoryImage(params['appLogoData']);
     final asclabsLogo = pw.MemoryImage(params['asclabsData']);
@@ -104,7 +123,7 @@ class PdfGeneratorService {
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
                             pw.Text(
-                              'CÁLCULO DE RPM. POLIAS E CORREIAS',
+                              labels.appTitle.toUpperCase(),
                               style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold, color: stellarWhite),
                             ),
                             pw.Row(children: [
@@ -125,7 +144,7 @@ class PdfGeneratorService {
                 pw.Text(title, style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold, color: stellarWhite)),
                 pw.SizedBox(height: 10),
 
-                pw.Text('PARÂMETROS TÉCNICOS', style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: cosmicTeal, letterSpacing: 1)),
+                pw.Text(labels.params, style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: cosmicTeal, letterSpacing: 1)),
                 pw.SizedBox(height: 4),
                 pw.Table(
                   children: inputs.entries.map((e) => pw.TableRow(
@@ -148,7 +167,7 @@ class PdfGeneratorService {
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text('RESULTADOS DE DIMENSIONAMENTO', style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold, color: cosmicTeal)),
+                      pw.Text(labels.results, style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold, color: cosmicTeal)),
                       pw.SizedBox(height: 8),
                       pw.Table(
                         children: results.entries.map((e) => pw.TableRow(
@@ -168,13 +187,13 @@ class PdfGeneratorService {
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text('ESQUEMA TÉCNICO', style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: cosmicTeal)),
+                      pw.Text(labels.diagram, style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: cosmicTeal)),
                       pw.SizedBox(height: 8),
                       pw.Expanded(
                         child: _buildNewDiagram(diagramData, cosmicTeal, stellarWhite),
                       ),
                       pw.SizedBox(height: 15),
-                      pw.Text('MEMÓRIA DE CÁLCULO', style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: greyText)),
+                      pw.Text(labels.formulas, style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: greyText)),
                       pw.SizedBox(height: 4),
                       ...formulas.map((f) => pw.Text(f, style: pw.TextStyle(fontSize: 8, fontStyle: pw.FontStyle.italic, color: greyText.withAlpha(0.6)))),
                     ],
@@ -202,12 +221,12 @@ class PdfGeneratorService {
                             child: pw.Center(child: pw.Text('!', style: pw.TextStyle(color: deepDark, fontSize: 8, fontWeight: pw.FontWeight.bold))),
                           ),
                           pw.SizedBox(width: 8),
-                          pw.Text('AVISO TÉCNICO', style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold, color: greyText)),
+                          pw.Text(labels.warning, style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold, color: greyText)),
                         ],
                       ),
                       pw.SizedBox(height: 4),
                       pw.Text(
-                        'Cálculos teóricos fundamentados em normas de engenharia. A verificação por um engenheiro mecânico é mandatória para a implementação física.',
+                        labels.warningText,
                         textAlign: pw.TextAlign.center,
                         style: pw.TextStyle(color: greyText, fontSize: 8, lineSpacing: 1.5),
                       ),
@@ -221,7 +240,7 @@ class PdfGeneratorService {
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
                     pw.Text('© 2026 ASCLABS', style: pw.TextStyle(fontSize: 7, color: greyText)),
-                    pw.Text('Documento informativo', style: pw.TextStyle(fontSize: 7, color: greyText.withAlpha(0.6))),
+                    pw.Text(labels.informative, style: pw.TextStyle(fontSize: 7, color: greyText.withAlpha(0.6))),
                   ],
                 ),
               ],

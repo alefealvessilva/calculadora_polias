@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:calculadora_polias/core/ads/ad_helper.dart';
-import 'package:calculadora_polias/core/theme/app_theme.dart';
 import 'package:calculadora_polias/core/utils/unit_converter.dart';
 import 'package:calculadora_polias/domain/usecases/calculations_usecases.dart';
 import 'package:calculadora_polias/presentation/providers/app_providers.dart';
-import 'package:calculadora_polias/core/widgets/disclaimer_widget.dart';
 import 'package:calculadora_polias/core/utils/pdf_generator_service.dart';
-import 'package:calculadora_polias/core/widgets/branding_app_bar.dart';
 import 'package:calculadora_polias/presentation/widgets/custom_text_field.dart';
 import 'package:calculadora_polias/presentation/widgets/pulley_diagram_painter.dart';
+import 'package:calculadora_polias/presentation/widgets/calculator_widgets.dart';
+import 'package:calculadora_polias/l10n/l10n.dart';
+import 'package:calculadora_polias/core/ads/export_gate.dart';
 
 class BeltLengthPage extends ConsumerStatefulWidget {
   const BeltLengthPage({super.key});
@@ -61,7 +60,7 @@ class _BeltLengthPageState extends ConsumerState<BeltLengthPage> {
       final item = HistoryItem(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         type: CalculationType.beltLength,
-        title: 'Comprimento de Correia',
+        title: context.l10n.historyBeltTitle,
         result:
             'D:${UnitConverter.format(result.d1)} d:${UnitConverter.format(result.d2)} -> C:${UnitConverter.format(result.c)} L:${UnitConverter.format(result.l)} ${unit.label}',
         date: DateTime.now(),
@@ -78,7 +77,7 @@ class _BeltLengthPageState extends ConsumerState<BeltLengthPage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString().replaceAll('ArgumentError: ', '')),
+          content: Text(context.l10n.calcError(e)),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -87,26 +86,33 @@ class _BeltLengthPageState extends ConsumerState<BeltLengthPage> {
 
   Future<void> _exportPdf() async {
     if (_result == null || _isExporting) return;
+    await runWithRewardedGate(context, _doExport);
+  }
+
+  Future<void> _doExport() async {
+    if (_result == null || _isExporting || !mounted) return;
+    final l10n = context.l10n;
 
     setState(() => _isExporting = true);
 
     try {
       final unit = ref.read(unitProvider);
       await PdfGeneratorService.exportCalculation(
-        title: 'Relatório de Correia',
+        labels: l10n.pdfLabels(),
+        title: l10n.pdfTitleBelt,
         inputs: {
-          'Polia Maior (D)':
+          l10n.pdfLargePulley:
               '${UnitConverter.format(_result!.d1)} ${unit.label}',
-          'Polia Menor (d)':
+          l10n.pdfSmallPulley:
               '${UnitConverter.format(_result!.d2)} ${unit.label}',
-          'Distância entre Centros (C)':
+          l10n.pdfCenterDistance:
               '${UnitConverter.format(_result!.c)} ${unit.label}',
-          'Comprimento da Correia (L)':
+          l10n.pdfBeltLength:
               '${UnitConverter.format(_result!.l)} ${unit.label}',
         },
         results: {
-          'Distância C': '${UnitConverter.format(_result!.c)} ${unit.label}',
-          'Comprimento L': '${UnitConverter.format(_result!.l)} ${unit.label}',
+          l10n.pdfResultDistance: '${UnitConverter.format(_result!.c)} ${unit.label}',
+          l10n.pdfResultLength: '${UnitConverter.format(_result!.l)} ${unit.label}',
         },
         formulas: [
           'L = 2C + 1.57(D + d) + (D - d)² / 4C',
@@ -138,268 +144,47 @@ class _BeltLengthPageState extends ConsumerState<BeltLengthPage> {
   @override
   Widget build(BuildContext context) {
     final unit = ref.watch(unitProvider);
+    final r = _result;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final bool isDesktop = constraints.maxWidth > 800;
-
-        final content = Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: isDesktop ? 1200 : 600),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: isDesktop ? 48 : 16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (isDesktop) ...[
-                      const SizedBox(height: 80),
-                      Text(
-                        'Cálculo de Correias',
-                        style: GoogleFonts.sora(
-                          fontSize: 48,
-                          fontWeight: FontWeight.w900,
-                          color: AppTheme.stellarWhite,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Determine o comprimento exato ou a distância entre centros de forma simples.',
-                        style: GoogleFonts.inter(
-                          color: AppTheme.greyText,
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 80),
-                      _buildInfoBox(),
-                      const SizedBox(height: 32),
-                    ],
-
-                    if (isDesktop)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(flex: 1, child: _buildInputSection(unit)),
-                          const SizedBox(width: 80),
-                          Expanded(flex: 1, child: _buildVisualSection(unit)),
-                        ],
-                      )
-                    else
-                      Column(
-                        children: [
-                          _buildInfoBox(),
-                          const SizedBox(height: 32),
-                          _buildInputSection(unit),
-                          const SizedBox(height: 48),
-                          _buildVisualSection(unit),
-                        ],
-                      ),
-
-                    if (isDesktop) const SizedBox(height: 120),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-
-        if (isDesktop) return content;
-
-        return Scaffold(
-          appBar: const BrandingAppBar(),
-          body: SingleChildScrollView(
-            child: Padding(padding: const EdgeInsets.symmetric(vertical: 20), child: content),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildInfoBox() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.cosmicTeal.withAlpha(10),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.cosmicTeal.withAlpha(20)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.info_outline, color: AppTheme.cosmicTeal, size: 20),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'DICA: Deixe o campo que deseja descobrir em BRANCO.',
-              style: GoogleFonts.inter(
-                color: AppTheme.cosmicTeal,
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInputSection(MeasurementUnit unit) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return PageBody(
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'DIÂMETROS',
-                    style: GoogleFonts.sora(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
-                      color: AppTheme.stellarWhite,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextField(
-                    label: 'Polia Maior (${unit.label})',
-                    controller: _d1Controller,
-                    suffixText: unit.label,
-                  ),
-                  CustomTextField(
-                    label: 'Polia Menor (${unit.label})',
-                    controller: _d2Controller,
-                    suffixText: unit.label,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 24),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'GEOMETRIA',
-                    style: GoogleFonts.sora(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
-                      color: AppTheme.stellarWhite,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextField(
-                    label: 'Dist. Centros (${unit.label})',
-                    controller: _cController,
-                    suffixText: unit.label,
-                  ),
-                  CustomTextField(
-                    label: 'Comprimento (${unit.label})',
-                    controller: _lController,
-                    suffixText: unit.label,
-                  ),
-                ],
-              ),
-            ),
-          ],
+        PageHeader(
+          title: context.l10n.tabBelt,
+          subtitle: context.l10n.hintLeaveBlank,
         ),
-        const SizedBox(height: 32),
-        Row(
-          children: [
-            Expanded(
-              child: TextButton(
-                onPressed: _reset,
-                child: Text(
-                  'LIMPAR CAMPOS',
-                  style: GoogleFonts.inter(
-                    color: AppTheme.greyText,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+        Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              FieldRow(
+                left: CustomTextField(label: context.l10n.largePulley(unit.label), controller: _d1Controller, suffixText: unit.label),
+                right: CustomTextField(label: context.l10n.smallPulley(unit.label), controller: _d2Controller, suffixText: unit.label),
               ),
-            ),
-            const SizedBox(width: 24),
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: AppTheme.digitalGlowDecoration,
-                child: ElevatedButton(
-                  onPressed: _calculate,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                  ),
-                  child: const Text('CALCULAR'),
-                ),
+              FieldRow(
+                left: CustomTextField(label: context.l10n.centerDistance(unit.label), controller: _cController, suffixText: unit.label),
+                right: CustomTextField(label: context.l10n.beltLength(unit.label), controller: _lController, suffixText: unit.label),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildVisualSection(MeasurementUnit unit) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: AppTheme.cardGlowDecoration,
-      child: Column(
-        children: [
-          Text(
-            'DIAGRAMA GEOMÉTRICO',
-            style: GoogleFonts.sora(
-              letterSpacing: 2,
-              color: AppTheme.cosmicTeal,
-              fontSize: 11,
-              fontWeight: FontWeight.w900,
+        ActionRow(onClear: _reset, onCalculate: _calculate),
+        if (r != null) ...[
+          const SizedBox(height: 20),
+          ResultCard(
+            label: context.l10n.beltResultLabel,
+            value: '${UnitConverter.format(r.l)} ${unit.label}',
+            exporting: _isExporting,
+            onExport: _exportPdf,
+            diagram: AnimatedPulleyDiagram(
+              drivingDiameter: r.d1,
+              drivenDiameter: r.d2,
+              distance: r.c,
+              animate: true,
             ),
           ),
-          const SizedBox(height: 40),
-          SizedBox(
-            height: 180,
-            width: double.infinity,
-            child: AnimatedPulleyDiagram(
-              drivingDiameter: _result?.d1 ?? 50,
-              drivenDiameter: _result?.d2 ?? 50,
-              distance: _result?.c ?? 100,
-              animate: _result != null,
-            ),
-          ),
-          if (_result != null) ...[
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _isExporting ? null : _exportPdf,
-                icon: _isExporting
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppTheme.deepDark,
-                          ),
-                        ),
-                      )
-                    : const Icon(Icons.picture_as_pdf),
-                label: Text(_isExporting ? 'GERANDO...' : 'GERAR RELATÓRIO'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.stellarWhite,
-                  foregroundColor: AppTheme.deepDark,
-                  padding: const EdgeInsets.symmetric(vertical: 22),
-                ),
-              ),
-            ),
-          ],
-          const SizedBox(height: 32),
-          const DisclaimerWidget(),
         ],
-      ),
+        const DisclaimerText(),
+      ],
     );
   }
 }

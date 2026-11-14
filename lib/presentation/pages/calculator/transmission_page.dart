@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:calculadora_polias/core/ads/ad_helper.dart';
-import 'package:calculadora_polias/core/theme/app_theme.dart';
 import 'package:calculadora_polias/core/utils/unit_converter.dart';
 import 'package:calculadora_polias/domain/usecases/calculations_usecases.dart';
 import 'package:calculadora_polias/presentation/providers/app_providers.dart';
-import 'package:calculadora_polias/core/widgets/disclaimer_widget.dart';
 import 'package:calculadora_polias/core/utils/pdf_generator_service.dart';
-import 'package:calculadora_polias/core/widgets/branding_app_bar.dart';
 import 'package:calculadora_polias/presentation/widgets/custom_text_field.dart';
-import 'package:calculadora_polias/presentation/widgets/pulley_system_diagram.dart';
+import 'package:calculadora_polias/presentation/widgets/pulley_diagram_painter.dart';
+import 'package:calculadora_polias/presentation/widgets/calculator_widgets.dart';
+import 'package:calculadora_polias/l10n/l10n.dart';
+import 'package:calculadora_polias/core/ads/export_gate.dart';
 
 class TransmissionPage extends ConsumerStatefulWidget {
   const TransmissionPage({super.key});
@@ -58,7 +57,7 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
       final item = HistoryItem(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         type: CalculationType.transmission,
-        title: 'Transmissão de Polias',
+        title: context.l10n.historyTransmissionTitle,
         result: 'N1:${UnitConverter.format(result.n1)} D1:${UnitConverter.format(result.d1)} -> N2:${UnitConverter.format(result.n2)} D2:${UnitConverter.format(result.d2)} ${unit.label}',
         date: DateTime.now(),
         calculationData: {
@@ -70,31 +69,38 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
       InterstitialAdManager.incrementAndMaybeShowAd();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceAll('ArgumentError: ', '')), backgroundColor: Colors.redAccent),
+        SnackBar(content: Text(context.l10n.calcError(e)), backgroundColor: Colors.redAccent),
       );
     }
   }
 
   Future<void> _exportPdf() async {
     if (_result == null || _isExporting) return;
+    await runWithRewardedGate(context, _doExport);
+  }
+
+  Future<void> _doExport() async {
+    if (_result == null || _isExporting || !mounted) return;
+    final l10n = context.l10n;
 
     setState(() => _isExporting = true);
     
     try {
       final unit = ref.read(unitProvider);
       await PdfGeneratorService.exportCalculation(
-        title: 'Relatório de Transmissão',
+        labels: l10n.pdfLabels(),
+        title: l10n.pdfTitleTransmission,
         inputs: {
-          'RPM Motor (N1)': '${UnitConverter.format(_result!.n1)} RPM',
-          'Polia Motor (D1)': '${UnitConverter.format(_result!.d1)} ${unit.label}',
-          'RPM Movida (N2)': '${UnitConverter.format(_result!.n2)} RPM',
-          'Polia Movida (D2)': '${UnitConverter.format(_result!.d2)} ${unit.label}',
+          l10n.pdfMotorRpm: '${UnitConverter.format(_result!.n1)} RPM',
+          l10n.pdfMotorPulley: '${UnitConverter.format(_result!.d1)} ${unit.label}',
+          l10n.pdfDrivenRpm: '${UnitConverter.format(_result!.n2)} RPM',
+          l10n.pdfDrivenPulley: '${UnitConverter.format(_result!.d2)} ${unit.label}',
         },
         results: {
-          'Relação de Transmissão': '1 : ${UnitConverter.format(_result!.ratio)}',
-          'RPM de Saída': '${UnitConverter.format(_result!.n2)} RPM',
+          l10n.pdfRatio: '1 : ${UnitConverter.format(_result!.ratio)}',
+          l10n.pdfOutputRpm: '${UnitConverter.format(_result!.n2)} RPM',
         },
-        formulas: ['Fórmula Base: N1 * D1 = N2 * D2', 'Relação: i = D2 / D1'],
+        formulas: [l10n.pdfBaseFormula, l10n.pdfRatioFormula],
         diagramData: {'d1': _result!.d1, 'd2': _result!.d2, 'distance': 150.0},
       );
     } finally {
@@ -112,231 +118,48 @@ class _TransmissionPageState extends ConsumerState<TransmissionPage> {
   @override
   Widget build(BuildContext context) {
     final unit = ref.watch(unitProvider);
+    final r = _result;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final bool isDesktop = constraints.maxWidth > 800;
-
-        final content = Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: isDesktop ? 1200 : 600),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: isDesktop ? 48 : 16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (isDesktop) ...[
-                    const SizedBox(height: 80),
-                    Text(
-                      'Cálculo de Transmissão',
-                      style: GoogleFonts.sora(fontSize: 48, fontWeight: FontWeight.w900, color: AppTheme.stellarWhite),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Dimensionamento de rotações e diâmetros para projetos mecânicos.',
-                      style: GoogleFonts.inter(color: AppTheme.greyText, fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 80),
-                    _buildInfoBox(),
-                    const SizedBox(height: 32),
-                  ],
-
-                  if (isDesktop)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(flex: 1, child: _buildInputSection(unit)),
-                        const SizedBox(width: 80),
-                        Expanded(flex: 1, child: _buildVisualSection(unit)),
-                      ],
-                    )
-                  else
-                    Column(
-                      children: [
-                        _buildInfoBox(),
-                        const SizedBox(height: 32),
-                        _buildInputSection(unit),
-                        const SizedBox(height: 48),
-                        _buildVisualSection(unit),
-                      ],
-                    ),
-                  
-                  if (isDesktop) const SizedBox(height: 120),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-
-        if (isDesktop) return content;
-
-        return Scaffold(
-          appBar: const BrandingAppBar(),
-          body: SingleChildScrollView(child: Padding(padding: const EdgeInsets.symmetric(vertical: 20), child: content)),
-        );
-      },
-    );
-  }
-
-  Widget _buildInfoBox() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.cosmicTeal.withAlpha(10),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.cosmicTeal.withAlpha(20)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.info_outline, color: AppTheme.cosmicTeal, size: 20),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'DICA: Deixe o campo que deseja descobrir em BRANCO.',
-              style: GoogleFonts.inter(color: AppTheme.cosmicTeal, fontWeight: FontWeight.w600, fontSize: 13),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInputSection(MeasurementUnit unit) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return PageBody(
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('MOTOR (Polia 1)', style: GoogleFonts.sora(fontWeight: FontWeight.w800, fontSize: 16, color: AppTheme.stellarWhite)),
-                  const SizedBox(height: 20),
-                  CustomTextField(label: 'RPM Motor', controller: _n1Controller, suffixText: 'RPM'),
-                  CustomTextField(label: 'Diâmetro (${unit.label})', controller: _d1Controller, suffixText: unit.label),
-                ],
-              ),
-            ),
-            const SizedBox(width: 24),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('MOVIDA (Polia 2)', style: GoogleFonts.sora(fontWeight: FontWeight.w800, fontSize: 16, color: AppTheme.stellarWhite)),
-                  const SizedBox(height: 20),
-                  CustomTextField(label: 'RPM Polia', controller: _n2Controller, suffixText: 'RPM'),
-                  CustomTextField(label: 'Diâmetro (${unit.label})', controller: _d2Controller, suffixText: unit.label),
-                ],
-              ),
-            ),
-          ],
+        PageHeader(
+          title: context.l10n.tabTransmission,
+          subtitle: context.l10n.hintLeaveBlank,
         ),
-        const SizedBox(height: 32),
-        Row(
-          children: [
-            Expanded(
-              child: TextButton(
-                onPressed: _reset,
-                child: Text('LIMPAR CAMPOS', style: GoogleFonts.inter(color: AppTheme.greyText, fontWeight: FontWeight.bold)),
+        Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              FieldRow(
+                left: CustomTextField(label: context.l10n.motorRpm, controller: _n1Controller, suffixText: 'RPM'),
+                right: CustomTextField(label: context.l10n.motorDiameter(unit.label), controller: _d1Controller, suffixText: unit.label),
               ),
-            ),
-            const SizedBox(width: 24),
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: AppTheme.digitalGlowDecoration,
-                child: ElevatedButton(
-                  onPressed: _calculate,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                  ),
-                  child: const Text('CALCULAR'),
-                ),
+              FieldRow(
+                left: CustomTextField(label: context.l10n.drivenRpm, controller: _n2Controller, suffixText: 'RPM'),
+                right: CustomTextField(label: context.l10n.drivenDiameter(unit.label), controller: _d2Controller, suffixText: unit.label),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildVisualSection(MeasurementUnit unit) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: AppTheme.cardGlowDecoration,
-      child: Column(
-        children: [
-          Text(
-            'DIAGRAMA DE TRANSMISSÃO',
-            style: GoogleFonts.sora(letterSpacing: 2, color: AppTheme.cosmicTeal, fontSize: 11, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 40),
-          PulleySystemDiagram(
-            n1: _result?.n1 ?? 0,
-            d1: _result?.d1 ?? 0,
-            n2: _result?.n2 ?? 0,
-            d2: _result?.d2 ?? 0,
-            animate: _result != null,
-          ),
-          if (_result != null) ...[
-            const SizedBox(height: 40),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white.withAlpha(5),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Relação:', style: GoogleFonts.inter(color: AppTheme.greyText, fontWeight: FontWeight.w600)),
-                  const SizedBox(width: 12),
-                  Text(
-                    '1 : ${UnitConverter.format(_result!.ratio)}',
-                    style: GoogleFonts.sora(color: AppTheme.cosmicTeal, fontSize: 24, fontWeight: FontWeight.w900, shadows: [
-                      Shadow(color: AppTheme.cosmicTeal.withAlpha(50), blurRadius: 10),
-                    ]),
-                  ),
-                ],
-              ),
+        ActionRow(onClear: _reset, onCalculate: _calculate),
+        if (r != null) ...[
+          const SizedBox(height: 20),
+          ResultCard(
+            label: context.l10n.ratioLabel,
+            value: '1 : ${UnitConverter.format(r.ratio)}',
+            exporting: _isExporting,
+            onExport: _exportPdf,
+            diagram: PulleySystemDiagram(
+              n1: r.n1,
+              d1: r.d1,
+              n2: r.n2,
+              d2: r.d2,
+              animate: true,
             ),
-            const SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _isExporting ? null : _exportPdf,
-                icon: _isExporting
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(AppTheme.deepDark),
-                        ),
-                      )
-                    : const Icon(Icons.picture_as_pdf),
-                label: Text(_isExporting ? 'GERANDO...' : 'GERAR RELATÓRIO'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.stellarWhite,
-                  foregroundColor: AppTheme.deepDark,
-                  padding: const EdgeInsets.symmetric(vertical: 22),
-                ),
-              ),
-            ),
-          ],
-          const SizedBox(height: 32),
-          const DisclaimerWidget(),
+          ),
         ],
-      ),
+        const DisclaimerText(),
+      ],
     );
   }
 }

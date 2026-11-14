@@ -1,170 +1,156 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+/// IDs vêm do .env (ADMOB_INTERSTITIAL_ID, ADMOB_REWARDED_ID).
+/// Sem ID configurado o formato correspondente simplesmente não aparece.
 class AdHelper {
-  static bool get adsEnabled {
-    final bannerId = dotenv.maybeGet('ADMOB_BANNER_ID');
-    final interstitialId = dotenv.maybeGet('ADMOB_INTERSTITIAL_ID');
-    return bannerId != null && bannerId.isNotEmpty && 
-           interstitialId != null && interstitialId.isNotEmpty;
-  }
+  static String _id(String key) => dotenv.maybeGet(key) ?? '';
 
-  static String get bannerAdUnitId {
-    return dotenv.get('ADMOB_BANNER_ID', fallback: '');
-  }
+  static String get interstitialId => _id('ADMOB_INTERSTITIAL_ID');
+  static String get rewardedId => _id('ADMOB_REWARDED_ID');
 
-  static String get interstitialAdUnitId {
-    return dotenv.get('ADMOB_INTERSTITIAL_ID', fallback: '');
-  }
+  static bool get supported => !kIsWeb;
+  static bool get interstitialEnabled => supported && interstitialId.isNotEmpty;
+  static bool get rewardedEnabled => supported && rewardedId.isNotEmpty;
 
-  static Future<void> initGoogleMobileAds() async {
-    if (kIsWeb) {
-      await InterstitialAdManager.initCount();
-      return;
-    }
+  static bool _initialized = false;
 
-    if (adsEnabled) {
-      try {
-        await MobileAds.instance.initialize();
-      } catch (e) {
-        debugPrint('Erro ao inicializar MobileAds: $e');
-      }
-    }
-    
-    await InterstitialAdManager.initCount();
-  }
-}
+  /// Consentimento (UMP) e depois o SDK. Seguro chamar mais de uma vez.
+  static Future<void> init() async {
+    if (!supported || _initialized) return;
+    if (!interstitialEnabled && !rewardedEnabled) return;
+    _initialized = true;
 
-// Widget Placeholder para o Banner Ad
-class BottomBannerAd extends StatefulWidget {
-  const BottomBannerAd({super.key});
-
-  @override
-  State<BottomBannerAd> createState() => _BottomBannerAdState();
-}
-
-class _BottomBannerAdState extends State<BottomBannerAd> {
-  BannerAd? _bannerAd;
-  bool _isLoaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    if (!kIsWeb && AdHelper.adsEnabled) {
-      _loadAd();
-    }
-  }
-
-  void _loadAd() {
-    final adUnitId = AdHelper.bannerAdUnitId;
-    if (adUnitId.isEmpty) return;
-
-    _bannerAd = BannerAd(
-      adUnitId: adUnitId,
-      request: const AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) setState(() => _isLoaded = true);
-          });
+    try {
+      final done = Completer<void>();
+      ConsentInformation.instance.requestConsentInfoUpdate(
+        ConsentRequestParameters(),
+        () async {
+          try {
+            await ConsentForm.loadAndShowConsentFormIfRequired((_) {});
+          } catch (e) {
+            debugPrint('UMP form: $e');
+          }
+          if (!done.isCompleted) done.complete();
         },
-        onAdFailedToLoad: (ad, err) {
-          debugPrint('Failed to load a banner ad: ${err.message}');
-          ad.dispose();
+        (error) {
+          debugPrint('UMP: ${error.message}');
+          if (!done.isCompleted) done.complete();
         },
-      ),
-    )..load();
-  }
-
-  @override
-  void dispose() {
-    _bannerAd?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (kIsWeb || !AdHelper.adsEnabled) return const SizedBox.shrink();
-    if (_isLoaded && _bannerAd != null) {
-      return Container(
-        color: Colors.transparent,
-        alignment: Alignment.center,
-        width: _bannerAd!.size.width.toDouble(),
-        height: _bannerAd!.size.height.toDouble(),
-        child: AdWidget(ad: _bannerAd!),
       );
+      await done.future.timeout(const Duration(seconds: 10), onTimeout: () {});
+
+      if (await ConsentInformation.instance.canRequestAds()) {
+        await MobileAds.instance.initialize();
+        InterstitialAdManager.load();
+        RewardedGate.load();
+      }
+    } catch (e) {
+      debugPrint('Ads init: $e');
     }
-    return const SizedBox(height: 50);
   }
 }
 
+/// Intersticial discreto: nunca nos primeiros usos e a cada [_every] cálculos.
 class InterstitialAdManager {
-  static InterstitialAd? _interstitialAd;
-  static int _calculationCount = 0;
-  static const int _adFrequency = 3;
+  static InterstitialAd? _ad;
+  static int _count = 0;
+  static const int _grace = 3;
+  static const int _every = 4;
   static const String _prefKey = 'interstitial_calc_count';
-
-  static int get calculationsUntilNextAd {
-    return _adFrequency - (_calculationCount % _adFrequency);
-  }
 
   static Future<void> initCount() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      _calculationCount = prefs.getInt(_prefKey) ?? 0;
-      
-      if (!kIsWeb && AdHelper.adsEnabled) {
-        loadInterstitialAd();
-      }
+      _count = prefs.getInt(_prefKey) ?? 0;
     } catch (e) {
-      debugPrint('Error init count: $e');
+      debugPrint('initCount: $e');
     }
   }
 
-  static void loadInterstitialAd() {
-    if (kIsWeb || !AdHelper.adsEnabled) return;
-    
-    final adUnitId = AdHelper.interstitialAdUnitId;
-    if (adUnitId.isEmpty) return;
-
+  static void load() {
+    if (!AdHelper.interstitialEnabled || _ad != null) return;
     InterstitialAd.load(
-      adUnitId: adUnitId,
+      adUnitId: AdHelper.interstitialId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          _interstitialAd = ad;
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          debugPrint('InterstitialAd failed to load: $error');
-        },
+        onAdLoaded: (ad) => _ad = ad,
+        onAdFailedToLoad: (e) => debugPrint('Interstitial: ${e.message}'),
       ),
     );
   }
 
-  static void incrementAndMaybeShowAd() async {
-    _calculationCount++;
+  static Future<void> incrementAndMaybeShowAd() async {
+    _count++;
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(_prefKey, _calculationCount);
-    } catch (e) {
-      debugPrint('Não foi possivel salvar prefs $e');
-    }
+      await prefs.setInt(_prefKey, _count);
+    } catch (_) {}
 
-    if (kIsWeb || !AdHelper.adsEnabled) return;
+    if (!AdHelper.interstitialEnabled) return;
+    if (_count <= _grace || _count % _every != 0) return;
 
-    if (_calculationCount % _adFrequency == 0) {
-      if (_interstitialAd != null) {
-        _interstitialAd!.show();
-        _interstitialAd = null;
-        loadInterstitialAd();
-      } else {
-        debugPrint('Interstitial ad not ready yet.');
-        loadInterstitialAd(); // Tenta carregar se não estiver pronto
-      }
+    final ad = _ad;
+    if (ad == null) {
+      load();
+      return;
     }
+    _ad = null;
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (a) {
+        a.dispose();
+        load();
+      },
+      onAdFailedToShowFullScreenContent: (a, _) {
+        a.dispose();
+        load();
+      },
+    );
+    ad.show();
+  }
+}
+
+/// Anúncio premiado para liberar a exportação de PDF.
+class RewardedGate {
+  static RewardedAd? _ad;
+
+  static bool get ready => _ad != null;
+
+  static void load() {
+    if (!AdHelper.rewardedEnabled || _ad != null) return;
+    RewardedAd.load(
+      adUnitId: AdHelper.rewardedId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) => _ad = ad,
+        onAdFailedToLoad: (e) => debugPrint('Rewarded: ${e.message}'),
+      ),
+    );
+  }
+
+  /// Mostra o anúncio e devolve true se o usuário ganhou a recompensa.
+  static Future<bool> show() async {
+    final ad = _ad;
+    if (ad == null) return false;
+    _ad = null;
+    final completer = Completer<bool>();
+    var rewarded = false;
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (a) {
+        a.dispose();
+        load();
+        if (!completer.isCompleted) completer.complete(rewarded);
+      },
+      onAdFailedToShowFullScreenContent: (a, _) {
+        a.dispose();
+        load();
+        if (!completer.isCompleted) completer.complete(false);
+      },
+    );
+    ad.show(onUserEarnedReward: (view, reward) => rewarded = true);
+    return completer.future;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:calculadora_polias/l10n/l10n.dart';
 
 // Widget reutilizável para consistência nos formulários
 class CustomTextField extends StatelessWidget {
@@ -18,7 +19,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: EdgeInsets.zero,
       child: TextFormField(
         controller: controller,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -31,10 +32,10 @@ class CustomTextField extends StatelessWidget {
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Obrigatório';
+            return context.l10n.required;
           }
           if (double.tryParse(value.replaceAll(',', '.')) == null) {
-            return 'Número inválido';
+            return context.l10n.invalidNumber;
           }
           return null;
         },
